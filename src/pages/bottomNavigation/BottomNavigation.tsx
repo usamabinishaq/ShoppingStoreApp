@@ -1,6 +1,6 @@
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
-import React, {Component} from 'react';
+import React from 'react';
 import HomeScreen from '../home/Home';
 import SearchScreen from '../search/search';
 import Wishlist from '../wishlist/wishlist';

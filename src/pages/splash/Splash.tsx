@@ -19,28 +19,39 @@ export default class splashScreen extends Component<any, any> {
   setTimeCall = () => {
     setTimeout(() => {
       this.props.navigation.replace('BottomNavigation');
-    }, 1200);
+    }, 1500);
   };
   render() {
     console.log('Splash');
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
-          backgroundColor: '#FFF',
           justifyContent: 'center',
-          alignItems: 'center',
+          backgroundColor: '#E8E8E8',
         }}>
-        <StatusBar
-          animated={true}
-          backgroundColor="#FFF"
-          barStyle={'dark-content'}
-        />
+        <Text
+          style={{
+            fontSize: 65,
+            fontWeight: '700',
+            textAlign: 'center',
+            color: '#131410',
+            letterSpacing: 5,
+          }}>
+          PIERO
+        </Text>
 
-        <View style={{flex: 0.5, justifyContent: 'flex-end'}}>
-          <Text>Splash</Text>
-        </View>
-      </SafeAreaView>
+        <Text
+          style={{
+            fontSize: 16,
+
+            textAlign: 'center',
+            color: '#5E5C5B',
+            letterSpacing: 1,
+          }}>
+          LUXURY DESIGN
+        </Text>
+      </View>
     );
   }
 }

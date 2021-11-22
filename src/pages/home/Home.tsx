@@ -16,18 +16,18 @@ export default class HomeScreen extends Component<any, any> {
   }
 
   render() {
+    console.log('HOME');
     return (
       <View>
         <StatusBar
           animated={true}
-          backgroundColor="#FFF"
+          backgroundColor="#E8E8E8"
           barStyle={'dark-content'}
         />
         <View
           style={{
             flex: 0.5,
             justifyContent: 'flex-end',
-            backgroundColor: '#FF0',
           }}></View>
       </View>
     );

@@ -12,8 +12,8 @@ export default function BottomTabs() {
   return (
     <Tab.Navigator
       initialRouteName="HomeScreen"
-      activeColor="#1AAB4B"
-      barStyle={{backgroundColor: '#212121'}}>
+      activeColor="#131410"
+      barStyle={{backgroundColor: '#E8E8E8', elevation: 1}}>
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}

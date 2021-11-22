@@ -16,22 +16,16 @@ export default class SearchScreen extends Component<any, any> {
   }
 
   render() {
-    console.log('Render Call');
+    console.log('Search');
     return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-          backgroundColor: '#FFF',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+      <View>
         <StatusBar
           animated={true}
           backgroundColor="#FFF"
           barStyle={'dark-content'}
         />
         <View style={{flex: 0.5, justifyContent: 'flex-end'}}></View>
-      </SafeAreaView>
+      </View>
     );
   }
 }

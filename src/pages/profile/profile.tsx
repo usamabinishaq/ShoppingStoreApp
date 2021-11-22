@@ -16,9 +16,9 @@ export default class ProfileScreen extends Component<any, any> {
   }
 
   render() {
-    console.log('Render Call');
+    console.log('Profile');
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
           backgroundColor: '#FFF',
@@ -31,7 +31,7 @@ export default class ProfileScreen extends Component<any, any> {
           barStyle={'dark-content'}
         />
         <View style={{flex: 0.5, justifyContent: 'flex-end'}}></View>
-      </SafeAreaView>
+      </View>
     );
   }
 }

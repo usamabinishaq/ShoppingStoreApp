@@ -6,8 +6,9 @@ import {
   StatusBar,
   ImageBackground,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {ActivityIndicator} from 'react-native-paper';
 import colors from '../../colors/colors';
 
 export default class splashScreen extends Component<any, any> {
@@ -21,7 +22,7 @@ export default class splashScreen extends Component<any, any> {
   setTimeCall = () => {
     setTimeout(() => {
       this.props.navigation.replace('BottomNavigation');
-    }, 1500);
+    }, 2000);
   };
   render() {
     console.log('Splash');
@@ -29,31 +30,36 @@ export default class splashScreen extends Component<any, any> {
       <View
         style={{
           flex: 1,
-          justifyContent: 'center',
           backgroundColor: colors.primary,
         }}>
-        <Text
+        <View
           style={{
-            fontSize: 65,
-            fontWeight: '700',
-            textAlign: 'center',
-            color: colors.secondary,
-            letterSpacing: 5,
+            flex: 0.8,
+            justifyContent: 'center',
           }}>
-          PIERO
-        </Text>
-
-        <Text
-          style={{
-            fontSize: 16,
-
-            textAlign: 'center',
-            color: colors.lightGray,
-            letterSpacing: 1,
-          }}>
-          LUXURY DESIGN
-        </Text>
+          <Image
+            style={styles.logo}
+            source={require('../../assets/images/logo.png')}
+          />
+        </View>
+        <View style={{flex: 0.2}}>
+          <ActivityIndicator
+            style={styles.loader}
+            size="small"
+            color={colors.secondary}
+          />
+        </View>
       </View>
     );
   }
 }
+const styles = StyleSheet.create({
+  loader: {
+    marginTop: 20,
+  },
+  logo: {
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+  },
+});

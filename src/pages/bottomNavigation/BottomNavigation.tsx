@@ -6,14 +6,16 @@ import SearchScreen from '../search/search';
 import Wishlist from '../wishlist/wishlist';
 import ProfileScreen from '../profile/profile';
 
+import colors from '../../colors/colors';
+
 const Tab = createMaterialBottomTabNavigator();
 
 export default function BottomTabs() {
   return (
     <Tab.Navigator
       initialRouteName="HomeScreen"
-      activeColor="#131410"
-      barStyle={{backgroundColor: '#E8E8E8', elevation: 1}}>
+      activeColor={colors.secondary}
+      barStyle={{backgroundColor: colors.white, elevation: 1}}>
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}

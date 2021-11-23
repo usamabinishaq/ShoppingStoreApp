@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import colors from '../../colors/colors';
+
 export default class splashScreen extends Component<any, any> {
   NetInfoSubscription = null;
   constructor(props: any) {
@@ -28,14 +30,14 @@ export default class splashScreen extends Component<any, any> {
         style={{
           flex: 1,
           justifyContent: 'center',
-          backgroundColor: '#E8E8E8',
+          backgroundColor: colors.primary,
         }}>
         <Text
           style={{
             fontSize: 65,
             fontWeight: '700',
             textAlign: 'center',
-            color: '#131410',
+            color: colors.secondary,
             letterSpacing: 5,
           }}>
           PIERO
@@ -46,7 +48,7 @@ export default class splashScreen extends Component<any, any> {
             fontSize: 16,
 
             textAlign: 'center',
-            color: '#5E5C5B',
+            color: colors.lightGray,
             letterSpacing: 1,
           }}>
           LUXURY DESIGN

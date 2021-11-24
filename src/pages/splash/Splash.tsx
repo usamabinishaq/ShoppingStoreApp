@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
+  
 } from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import colors from '../../colors/colors';

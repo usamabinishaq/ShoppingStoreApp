@@ -42,7 +42,7 @@ export default class ProfileScreen extends Component<any, any> {
           </Text>
           <View style={{flexDirection: 'row', justifyContent: 'center'}}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.replace('SignInScreen')}>
+              onPress={() => this.props.navigation.navigate('SignUpScreen')}>
               <View
                 style={{
                   margin: 10,
@@ -62,23 +62,25 @@ export default class ProfileScreen extends Component<any, any> {
                 </Text>
               </View>
             </TouchableOpacity>
-
-            <View
-              style={{
-                margin: 10,
-                backgroundColor: colors.secondary,
-                width: windowWidth / 2.5,
-                height: 40,
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignSelf: 'center',
-                borderRadius: 2,
-                marginTop: 20,
-              }}>
-              <Text style={{fontWeight: 'bold', color: colors.white}}>
-                Sign in
-              </Text>
-            </View>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('SignInScreen')}>
+              <View
+                style={{
+                  margin: 10,
+                  backgroundColor: colors.secondary,
+                  width: windowWidth / 2.5,
+                  height: 40,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  borderRadius: 2,
+                  marginTop: 20,
+                }}>
+                <Text style={{fontWeight: 'bold', color: colors.white}}>
+                  Sign in
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

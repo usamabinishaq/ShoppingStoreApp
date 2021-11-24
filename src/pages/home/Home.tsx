@@ -32,13 +32,13 @@ export default class HomeScreen extends Component<any, any> {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt2.jpeg',
+          img: '../../assets/images/' + '2.jpeg',
         },
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt3.jpeg',
+          img: '../../assets/images/' + '7.jpeg',
         },
         {
           category: 'T Shirts',
@@ -101,7 +101,79 @@ export default class HomeScreen extends Component<any, any> {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => this.renderItem(item)}
+              renderItem={({item, index}) => this.renderChildItem(item)}
+            />
+            <View
+              style={{
+                backgroundColor: colors.secondary,
+                width: 100,
+                height: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+                borderRadius: 2,
+                marginTop: 20,
+              }}>
+              <Text style={{fontWeight: 'bold', color: colors.white}}>
+                Shop Now
+              </Text>
+            </View>
+          </View>
+          <View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: '700',
+                textAlign: 'center',
+                color: colors.secondary,
+                letterSpacing: 2,
+                marginTop: 10,
+              }}>
+              Wallets
+            </Text>
+            <FlatList
+              data={this.state.dataSrc}
+              numColumns={1}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => this.renderChildItem(item)}
+            />
+            <View
+              style={{
+                backgroundColor: colors.secondary,
+                width: 100,
+                height: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+                borderRadius: 2,
+                marginTop: 20,
+              }}>
+              <Text style={{fontWeight: 'bold', color: colors.white}}>
+                Shop Now
+              </Text>
+            </View>
+          </View>
+          <View>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: '700',
+                textAlign: 'center',
+                color: colors.secondary,
+                letterSpacing: 2,
+                marginTop: 10,
+              }}>
+              Hoodies
+            </Text>
+            <FlatList
+              data={this.state.dataSrc}
+              numColumns={1}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => this.renderChildItem(item)}
             />
             <View
               style={{
@@ -124,7 +196,7 @@ export default class HomeScreen extends Component<any, any> {
     );
   }
 
-  renderItem = item => {
+  renderChildItem = item => {
     return (
       <View style={styles.card}>
         <Icon
@@ -136,6 +208,9 @@ export default class HomeScreen extends Component<any, any> {
             alignSelf: 'flex-end',
             paddingTop: 10,
             paddingRight: 15,
+          }}
+          onPress={() => {
+            console.log(item.img);
           }}
         />
         <Image

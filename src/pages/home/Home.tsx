@@ -119,78 +119,6 @@ export default class HomeScreen extends Component<any, any> {
               </Text>
             </View>
           </View>
-          <View>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: '700',
-                textAlign: 'center',
-                color: colors.secondary,
-                letterSpacing: 2,
-                marginTop: 10,
-              }}>
-              Wallets
-            </Text>
-            <FlatList
-              data={this.state.dataSrc}
-              numColumns={1}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => this.renderChildItem(item)}
-            />
-            <View
-              style={{
-                backgroundColor: colors.secondary,
-                width: 100,
-                height: 40,
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignSelf: 'center',
-                borderRadius: 2,
-                marginTop: 20,
-              }}>
-              <Text style={{fontWeight: 'bold', color: colors.white}}>
-                Shop Now
-              </Text>
-            </View>
-          </View>
-          <View>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: '700',
-                textAlign: 'center',
-                color: colors.secondary,
-                letterSpacing: 2,
-                marginTop: 10,
-              }}>
-              Hoodies
-            </Text>
-            <FlatList
-              data={this.state.dataSrc}
-              numColumns={1}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => this.renderChildItem(item)}
-            />
-            <View
-              style={{
-                backgroundColor: colors.secondary,
-                width: 100,
-                height: 40,
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignSelf: 'center',
-                borderRadius: 2,
-                marginTop: 20,
-              }}>
-              <Text style={{fontWeight: 'bold', color: colors.white}}>
-                Shop Now
-              </Text>
-            </View>
-          </View>
         </ScrollView>
       </View>
     );
@@ -215,7 +143,9 @@ export default class HomeScreen extends Component<any, any> {
         />
         <Image
           style={styles.logo}
-          source={require('../../assets/images/' + 'shirt3.jpeg')}
+          source={{
+            uri: item.img,
+          }}
         />
 
         <Text style={{fontSize: 12, color: colors.lightGray}}>

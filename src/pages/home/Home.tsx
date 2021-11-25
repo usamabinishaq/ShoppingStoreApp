@@ -26,37 +26,37 @@ export default class HomeScreen extends Component<any, any> {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt.png',
+          img: '../../assets/images/shirt.png',
         },
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + '2.jpeg',
+          img: '../../assets/images/2.jpeg',
         },
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + '7.jpeg',
+          img: '../../assets/images/7.jpeg',
         },
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt3.jpeg',
+          img: '../../assets/images/shirt3.jpeg',
         },
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt3.jpeg',
+          img: '../../assets/images/shirt3.jpeg',
         },
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt3.jpeg',
+          img: '../../assets/images/shirt3.jpeg',
         },
       ],
     };
@@ -141,12 +141,7 @@ export default class HomeScreen extends Component<any, any> {
             console.log(item.img);
           }}
         />
-        <Image
-          style={styles.logo}
-          source={{
-            uri: item.img,
-          }}
-        />
+        <Image style={styles.logo} source={{uri: item.img}} />
 
         <Text style={{fontSize: 12, color: colors.lightGray}}>
           {item.category}

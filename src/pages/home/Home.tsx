@@ -21,42 +21,43 @@ export default class HomeScreen extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
+      isFav: false,
       dataSrc: [
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt.png',
+          img: '../../assets/images/shirt.png',
+        },
+        {
+          category: 'Wallets',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/2.jpeg',
+        },
+        {
+          category: 'Hoodies',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/7.jpeg',
+        },
+        {
+          category: 'Pants',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/shirt3.jpeg',
+        },
+        {
+          category: 'SweatPants',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/shirt3.jpeg',
         },
         {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: '../../assets/images/' + '2.jpeg',
-        },
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/' + '7.jpeg',
-        },
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt3.jpeg',
-        },
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt3.jpeg',
-        },
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/' + 'shirt3.jpeg',
+          img: '../../assets/images/shirt3.jpeg',
         },
       ],
     };
@@ -84,39 +85,27 @@ export default class HomeScreen extends Component<any, any> {
         </View>
         <ScrollView style={{flex: 0.8}}>
           <View>
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: '700',
-                textAlign: 'center',
-                color: colors.secondary,
-                letterSpacing: 2,
-                marginTop: 10,
-              }}>
-              New Arrivals
-            </Text>
-            <FlatList
-              data={this.state.dataSrc}
-              numColumns={1}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => this.renderChildItem(item)}
-            />
-            <View
-              style={{
-                backgroundColor: colors.secondary,
-                width: 100,
-                height: 40,
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignSelf: 'center',
-                borderRadius: 2,
-                marginTop: 20,
-              }}>
-              <Text style={{fontWeight: 'bold', color: colors.white}}>
-                Shop Now
-              </Text>
+            <View style={{flex: 0.3}}>
+              <Text style={styles.categoryTitle}>Categories</Text>
+              <FlatList
+                data={this.state.dataSrc}
+                numColumns={1}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => this.renderCategories(item)}
+              />
+            </View>
+            <View style={{flex: 0.7}}>
+              <Text style={styles.categoryTitle}>New Arrivals</Text>
+              <FlatList
+                data={this.state.dataSrc}
+                numColumns={1}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => this.renderChildItem(item)}
+              />
             </View>
           </View>
         </ScrollView>
@@ -124,49 +113,98 @@ export default class HomeScreen extends Component<any, any> {
     );
   }
 
+  renderCategories = item => {
+    return (
+      <View
+        style={{
+          backgroundColor: colors.primary,
+          width: 80,
+          height: 100,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginLeft: 10,
+          marginTop: 10,
+          marginBottom: 10,
+        }}>
+        <View
+          style={{
+            width: 80,
+            height: 80,
+            elevation: 5,
+            backgroundColor: colors.white,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Image
+            style={{width: 80, height: 80, borderRadius: 10}}
+            source={require('../../assets/images/shirt3.jpeg')}
+          />
+        </View>
+        <View>
+          <Text
+            style={{
+              paddingTop: 5,
+              fontSize: 12.5,
+              fontWeight: 'bold',
+              color: colors.secondary,
+            }}>
+            {item.category}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   renderChildItem = item => {
     return (
       <View style={styles.card}>
-        <Icon
-          name="star-outline"
-          color={colors.secondary}
-          size={18}
+        <View
           style={{
-            justifyContent: 'flex-end',
-            alignSelf: 'flex-end',
-            paddingTop: 10,
-            paddingRight: 15,
-          }}
-          onPress={() => {
-            console.log(item.img);
-          }}
-        />
-        <Image
-          style={styles.logo}
-          source={{
-            uri: item.img,
-          }}
-        />
-
-        <Text style={{fontSize: 12, color: colors.lightGray}}>
-          {item.category}
-        </Text>
-        <Text
-          style={{
-            fontSize: 14,
-            color: colors.secondary,
-            fontWeight: 'bold',
+            flex: 0.75,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          {item.name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 14,
-            color: colors.secondary,
-            fontWeight: '700',
-          }}>
-          {item.price}
-        </Text>
+          <ImageBackground
+            style={[
+              styles.logo,
+              {alignItems: 'flex-end', justifyContent: 'flex-start'},
+            ]}
+            source={require('../../assets/images/shirt3.jpeg')}>
+            <Icon
+              name={this.state.isFav == false ? 'star-outline' : 'star-sharp'}
+              size={16}
+              color={colors.secondary}
+              style={{marginRight: 5}}
+              onPress={() =>
+                this.state.isFav == true
+                  ? this.setState({isFav: false})
+                  : this.setState({isFav: true})
+              }
+            />
+          </ImageBackground>
+        </View>
+        <View style={{flex: 0.25, alignItems: 'center'}}>
+          <Text
+            style={{
+              fontSize: 12,
+              color: colors.secondary,
+              fontWeight: 'bold',
+            }}>
+            {item.name}
+          </Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text
+              style={{
+                fontSize: 11,
+                color: colors.secondary,
+              }}>
+              {item.price}
+            </Text>
+          </View>
+        </View>
       </View>
     );
   };
@@ -177,21 +215,26 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   logo: {
-    height: windowHeight / 4.5,
-    width: windowWidth / 1.9,
+    marginTop: 10,
+    height: 100,
+    width: windowWidth / 3.2,
+    borderRadius: 10,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   card: {
-    alignItems: 'center',
-    height: windowHeight / 2.5,
-    width: windowWidth / 1.8,
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 6,
-    shadowOpacity: 0.26,
+    height: windowHeight / 4.5,
+    width: windowWidth / 3.2,
     elevation: 8,
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     borderRadius: 10,
     margin: 10,
-    padding: 5,
+  },
+  categoryTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginLeft: 15,
+    color: colors.secondary,
   },
 });

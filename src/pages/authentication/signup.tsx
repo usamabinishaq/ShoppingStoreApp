@@ -1,3 +1,4 @@
+import {NavigationContainer} from '@react-navigation/native';
 import React, {Component} from 'react';
 import {
   View,
@@ -130,6 +131,7 @@ export default class SignUpScreen extends Component<any, any> {
 
             <View style={{flex: 0.2}}>
               <Text
+                onPress={() => this.props.navigation.navigate('SignInScreen')}
                 style={{
                   fontWeight: 'bold',
                   color: colors.secondary,

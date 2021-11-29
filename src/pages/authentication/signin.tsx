@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
 import Appbar from '../appbar/appbar';
+
 export default class SignInScreen extends Component<any, any> {
   constructor(props: any) {
     super(props);
@@ -40,21 +41,16 @@ export default class SignInScreen extends Component<any, any> {
                 placeholderTextColor={colors.lightGray}
                 secureTextEntry={this.state.isShow == true ? true : false}
               />
-              {this.state.isShow == true ? (
-                <Icon
-                  name="eye-off"
-                  color={colors.secondary}
-                  size={18}
-                  onPress={() => this.setState({isShow: false})}
-                />
-              ) : (
-                <Icon
-                  name="eye"
-                  color={colors.secondary}
-                  size={18}
-                  onPress={() => this.setState({isShow: true})}
-                />
-              )}
+              <Icon
+                name={this.state.isShow == true ? 'eye-off' : 'eye'}
+                color={colors.secondary}
+                size={18}
+                onPress={() =>
+                  this.state.isShow == true
+                    ? this.setState({isShow: false})
+                    : this.setState({isShow: true})
+                }
+              />
             </View>
             <TouchableOpacity
               onPress={() => console.log('Sign in Method to be Call')}>
@@ -118,6 +114,7 @@ export default class SignInScreen extends Component<any, any> {
 
             <View style={{flex: 0.2}}>
               <Text
+                onPress={() => this.props.navigation.navigate('SignUpScreen')}
                 style={{
                   fontWeight: 'bold',
                   color: colors.secondary,

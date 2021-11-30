@@ -6,8 +6,12 @@ import {
   StatusBar,
   ImageBackground,
   TouchableOpacity,
+  Image,
+  
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {ActivityIndicator} from 'react-native-paper';
+import colors from '../../colors/colors';
+
 export default class splashScreen extends Component<any, any> {
   NetInfoSubscription = null;
   constructor(props: any) {
@@ -19,28 +23,47 @@ export default class splashScreen extends Component<any, any> {
   setTimeCall = () => {
     setTimeout(() => {
       this.props.navigation.replace('BottomNavigation');
-    }, 1200);
+
+    }, 2000);
+
   };
   render() {
     console.log('Splash');
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
-          backgroundColor: '#FFF',
-          justifyContent: 'center',
-          alignItems: 'center',
+          backgroundColor: colors.primary,
         }}>
-        <StatusBar
-          animated={true}
-          backgroundColor="#FFF"
-          barStyle={'dark-content'}
-        />
-
-        <View style={{flex: 0.5, justifyContent: 'flex-end'}}>
-          <Text>Splash</Text>
+        <View
+          style={{
+            flex: 0.8,
+            justifyContent: 'center',
+          }}>
+          <Image
+            style={styles.logo}
+            source={require('../../assets/images/logo.png')}
+          />
         </View>
-      </SafeAreaView>
+        <View style={{flex: 0.2}}>
+          <ActivityIndicator
+            style={styles.loader}
+            size="small"
+            color={colors.secondary}
+          />
+        </View>
+
+      </View>
     );
   }
 }
+const styles = StyleSheet.create({
+  loader: {
+    marginTop: 20,
+  },
+  logo: {
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+  },
+});

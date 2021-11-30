@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
-import Appbar from '../appbar/appbar';
+import Appbar2 from '../appbar/appbar2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -36,7 +36,7 @@ export default class SearchScreen extends Component<any, any> {
     console.log('Search');
     return (
       <View style={styles.mainView}>
-        <Appbar />
+        <Appbar2 data={'Search'} />
         <View style={{flex: 0.9}}>
           <View style={styles.InputContainer}>
             <Icon
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   InputContainer: {
-    flex: 0.1,
+    flex: 0.08,
     elevation: 5,
     flexDirection: 'row',
     backgroundColor: colors.white,

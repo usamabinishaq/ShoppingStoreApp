@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../../colors/colors';
 import Appbar from '../appbar/appbar';
-import SimpleAppbar from '../appbar/simpleAppBar';
+import ProfileAppbar from '../appbar/ProfileAppbar';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -28,7 +28,7 @@ export default class ProfileScreen extends Component<any, any> {
   render() {
     return (
       <View style={styles.mainView}>
-        <SimpleAppbar />
+        <ProfileAppbar />
         <ScrollView style={{flex: 0.9, marginTop: 25}}>
           {this.state.isLogin == true ? (
             <View

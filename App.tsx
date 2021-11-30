@@ -8,6 +8,8 @@ import ProfileScreen from './src/pages/profile/profile';
 import SignUpScreen from './src/pages/authentication/signup';
 import SignInScreen from './src/pages/authentication/signin';
 import BottomTabs from './src/pages/bottomNavigation/BottomNavigation';
+import AllCategories from './src/pages/screens/allCategories';
+import AllProducts from './src/pages/screens/allProducts';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -49,6 +51,16 @@ const App = () => {
         <Stack.Screen
           name="SignInScreen"
           component={SignInScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AllCategories"
+          component={AllCategories}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AllProducts"
+          component={AllProducts}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

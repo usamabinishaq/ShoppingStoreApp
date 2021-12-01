@@ -11,7 +11,7 @@ import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../colors/colors';
 
-export default function Appbar2(props) {
+export default function Appbar2() {
   return (
     <View style={styles.appbar}>
       <StatusBar
@@ -19,8 +19,14 @@ export default function Appbar2(props) {
         backgroundColor={colors.primary}
         barStyle={'dark-content'}
       />
-      <View style={styles.logoView}>
-        <Text style={styles.logoText}>{props.data}</Text>
+      <View style={styles.profileView}>
+        <Image
+          style={styles.img}
+          source={require('../../assets/images/img.jpg')}
+        />
+      </View>
+      <View style={{justifyContent: 'center'}}>
+        <Text style={styles.username}>Mathew Charles</Text>
       </View>
 
       <View style={styles.bagView}>
@@ -34,21 +40,28 @@ const styles = StyleSheet.create({
     flex: 0.1,
     flexDirection: 'row',
   },
-  logoText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'left',
+  username: {
+    fontSize: 16,
+    fontWeight: '700',
     color: colors.secondary,
-    marginLeft: 15,
+    letterSpacing: 1,
   },
   bagView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+
+    marginRight: 10,
+  },
+  profileView: {
     flex: 0.1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 25,
   },
-  logoView: {
-    flex: 0.9,
-    justifyContent: 'center',
-    padding: 10,
+  img: {
+    height: 40,
+    width: 40,
+    borderRadius: 50,
   },
 });

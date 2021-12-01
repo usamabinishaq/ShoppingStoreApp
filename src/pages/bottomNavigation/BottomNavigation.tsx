@@ -15,13 +15,13 @@ export default function BottomTabs() {
     <Tab.Navigator
       initialRouteName="HomeScreen"
       activeColor={colors.secondary}
-      barStyle={{backgroundColor: colors.primary, elevation: 10}}>
+      barStyle={{backgroundColor: colors.primary, elevation: 1}}>
       <Tab.Screen
         name="HomeScreen"
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: () => <Icon name="home" color={colors.black} size={24} />,
+          tabBarIcon: ({color}) => <Icon name="home" color={color} size={24} />,
         }}
       />
       <Tab.Screen
@@ -29,8 +29,8 @@ export default function BottomTabs() {
         component={SearchScreen}
         options={{
           tabBarLabel: 'Search',
-          tabBarIcon: () => (
-            <Icon name="search" color={colors.black} size={24} />
+          tabBarIcon: ({color}) => (
+            <Icon name="search" color={color} size={24} />
           ),
         }}
       />
@@ -39,8 +39,8 @@ export default function BottomTabs() {
         component={Wishlist}
         options={{
           tabBarLabel: 'WishList',
-          tabBarIcon: () => (
-            <Icon name="star-sharp" color={colors.black} size={24} />
+          tabBarIcon: ({color}) => (
+            <Icon name="star-sharp" color={color} size={24} />
           ),
         }}
       />
@@ -49,8 +49,8 @@ export default function BottomTabs() {
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: () => (
-            <Icon name="person" color={colors.black} size={24} />
+          tabBarIcon: ({color}) => (
+            <Icon name="person" color={color} size={24} />
           ),
         }}
       />

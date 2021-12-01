@@ -15,7 +15,6 @@ import {
 import {SliderBox} from 'react-native-image-slider-box';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
-import Appbar2 from '../appbar/appbar2';
 import IconFontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 

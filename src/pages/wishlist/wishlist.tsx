@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
-import Appbar2 from '../appbar/appbar2';
+import Appbar from '../appbar/appbar';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -66,7 +66,7 @@ export default class Wishlist extends Component<any, any> {
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar2 data={'Wishlist'} />
+        <Appbar />
 
         <View
           style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
@@ -87,42 +87,32 @@ export default class Wishlist extends Component<any, any> {
       <View style={styles.card}>
         <View
           style={{
-            flex: 0.2,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            flex: 0.75,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          <View
-            style={{
-              alignItems: 'flex-start',
-              height: 30,
-              width: 60,
-              backgroundColor: colors.secondary,
-              justifyContent: 'center',
-              borderTopLeftRadius: 10,
-            }}>
-            <Text
-              style={{
-                color: colors.white,
-                fontSize: 12,
-                fontWeight: 'bold',
-                marginLeft: 10,
-              }}>
-              Buy Now
-            </Text>
-          </View>
-          <Icon
-            name="star-sharp"
-            color={colors.secondary}
-            size={18}
-            style={{margin: 7.5, justifyContent: 'center'}}
-          />
+          <ImageBackground
+            style={[
+              styles.logo,
+              {alignItems: 'flex-end', justifyContent: 'flex-start'},
+            ]}
+            source={require('../../assets/images/shirt3.jpeg')}>
+            <Icon
+              name={this.state.isFav == false ? 'star-outline' : 'star-sharp'}
+              size={16}
+              color={colors.secondary}
+              style={{marginRight: 5}}
+              onPress={() =>
+                this.state.isFav == true
+                  ? this.setState({isFav: false})
+                  : this.setState({isFav: true})
+              }
+            />
+          </ImageBackground>
         </View>
-        <Image
-          style={[styles.logo]}
-          source={require('../../assets/images/shirt3.jpeg')}
-        />
-        <View
-          style={{flex: 0.25, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{flex: 0.25, alignItems: 'center'}}>
           <Text
             style={{
               fontSize: 13,
@@ -151,14 +141,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   logo: {
-    height: 105,
-    width: windowWidth / 2.5,
+    height: 120,
+    width: windowWidth / 2.75,
     borderRadius: 10,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    flex: 0.55,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   card: {
     height: windowHeight / 3.5,

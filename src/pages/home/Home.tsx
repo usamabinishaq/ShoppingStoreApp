@@ -9,7 +9,6 @@ import {
   ScrollView,
   Dimensions,
   Image,
-  ToastAndroid,
   FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -28,25 +27,37 @@ export default class HomeScreen extends Component<any, any> {
           category: 'T Shirts',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: require('../../assets/images/shirt.png'),
-        },
-        {
-          category: 'Pants',
-          name: 'Black Cotton Pant',
-          price: '$97.30 – $139.00',
-          img: require('../../assets/images/2.jpeg'),
+          img: '../../assets/images/shirt.png',
         },
         {
           category: 'Wallets',
-          name: 'Blue Wallet',
-          price: '$97.30 – $139.00',
-          img: require('../../assets/images/7.jpeg'),
-        },
-        {
-          category: 'Rough',
           name: 'Black Cotton T Shirt',
           price: '$97.30 – $139.00',
-          img: require('../../assets/images/shirt3.jpeg'),
+          img: '../../assets/images/2.jpeg',
+        },
+        {
+          category: 'Hoodies',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/7.jpeg',
+        },
+        {
+          category: 'Pants',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/shirt3.jpeg',
+        },
+        {
+          category: 'SweatPants',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/shirt3.jpeg',
+        },
+        {
+          category: 'T Shirts',
+          name: 'Black Cotton T Shirt',
+          price: '$97.30 – $139.00',
+          img: '../../assets/images/shirt3.jpeg',
         },
       ],
     };
@@ -75,34 +86,7 @@ export default class HomeScreen extends Component<any, any> {
         <ScrollView style={{flex: 0.8}}>
           <View>
             <View style={{flex: 0.3}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.categoryTitle}>Categories</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    onPress={() =>
-                      this.props.navigation.navigate('AllCategories')
-                    }
-                    style={[styles.categoryTitle, {marginRight: 2}]}>
-                    Show all
-                  </Text>
-                  <Icon
-                    name={'chevron-forward'}
-                    size={15}
-                    color={colors.secondary}
-                    style={{marginTop: 10, marginRight: 5}}
-                  />
-                </View>
-              </View>
-
+              <Text style={styles.categoryTitle}>Categories</Text>
               <FlatList
                 data={this.state.dataSrc}
                 numColumns={1}
@@ -113,33 +97,7 @@ export default class HomeScreen extends Component<any, any> {
               />
             </View>
             <View style={{flex: 0.7}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.categoryTitle}>New Arrivals</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    onPress={() =>
-                      this.props.navigation.navigate('AllCategories')
-                    }
-                    style={[styles.categoryTitle, {marginRight: 2}]}>
-                    Show all
-                  </Text>
-                  <Icon
-                    name={'chevron-forward'}
-                    size={15}
-                    color={colors.secondary}
-                    style={{marginTop: 10, marginRight: 5}}
-                  />
-                </View>
-              </View>
+              <Text style={styles.categoryTitle}>New Arrivals</Text>
               <FlatList
                 data={this.state.dataSrc}
                 numColumns={1}
@@ -168,8 +126,7 @@ export default class HomeScreen extends Component<any, any> {
           marginTop: 10,
           marginBottom: 10,
         }}>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('AllProducts')}
+        <View
           style={{
             width: 80,
             height: 80,
@@ -180,14 +137,10 @@ export default class HomeScreen extends Component<any, any> {
             alignItems: 'center',
           }}>
           <Image
-            style={{
-              width: 80,
-              height: 80,
-              borderRadius: 10,
-            }}
-            source={item.img}
+            style={{width: 80, height: 80, borderRadius: 10}}
+            source={require('../../assets/images/shirt3.jpeg')}
           />
-        </TouchableOpacity>
+        </View>
         <View>
           <Text
             style={{
@@ -208,71 +161,50 @@ export default class HomeScreen extends Component<any, any> {
       <View style={styles.card}>
         <View
           style={{
-            flex: 0.2,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            flex: 0.75,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-          <View
-            style={{
-              alignItems: 'flex-start',
-              height: 25,
-              width: 50,
-              backgroundColor: colors.secondary,
-              justifyContent: 'center',
-              borderTopLeftRadius: 10,
-              elevation: 5,
-            }}>
-            <Text
-              style={{
-                color: colors.white,
-                fontSize: 11,
-                fontWeight: 'bold',
-                marginLeft: 5,
-              }}>
-              Buy Now
-            </Text>
-          </View>
-          <Icon
-            name={this.state.isFav == false ? 'star-outline' : 'star-sharp'}
-            size={15}
-            color={colors.secondary}
-            style={{marginRight: 7.5, marginTop: 5}}
-            onPress={() =>
-              this.state.isFav == true
-                ? this.setState({isFav: false})
-                : this.setState({isFav: true})
-            }
-          />
+          <ImageBackground
+            style={[
+              styles.logo,
+              {alignItems: 'flex-end', justifyContent: 'flex-start'},
+            ]}
+            source={require('../../assets/images/shirt3.jpeg')}>
+            <Icon
+              name={this.state.isFav == false ? 'star-outline' : 'star-sharp'}
+              size={16}
+              color={colors.secondary}
+              style={{marginRight: 5}}
+              onPress={() =>
+                this.state.isFav == true
+                  ? this.setState({isFav: false})
+                  : this.setState({isFav: true})
+              }
+            />
+          </ImageBackground>
         </View>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('ProductDetails')}
-          style={{flex: 0.8}}>
-          <Image style={[styles.logo]} source={item.img} />
-          <View
+        <View style={{flex: 0.25, alignItems: 'center'}}>
+          <Text
             style={{
-              flex: 0.3,
-              alignItems: 'center',
-              justifyContent: 'center',
+              fontSize: 12,
+              color: colors.secondary,
+              fontWeight: 'bold',
             }}>
+            {item.name}
+          </Text>
+          <View style={{flexDirection: 'row'}}>
             <Text
               style={{
-                fontSize: 12,
+                fontSize: 11,
                 color: colors.secondary,
-                fontWeight: 'bold',
               }}>
-              {item.name}
+              {item.price}
             </Text>
-            <View style={{flexDirection: 'row'}}>
-              <Text
-                style={{
-                  fontSize: 11,
-                  color: colors.secondary,
-                }}>
-                {item.price}
-              </Text>
-            </View>
           </View>
-        </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -289,8 +221,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    flex: 0.7,
-    alignSelf: 'center',
   },
   card: {
     height: windowHeight / 4.5,

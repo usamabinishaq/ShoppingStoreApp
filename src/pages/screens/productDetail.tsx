@@ -27,10 +27,7 @@ export default class ProductDetails extends Component<any, any> {
     this.state = {
       isFav: true,
       images: [
-        require('../../assets/images/shirt.png'),
-        require('../../assets/images/d.jpg'),
-        require('../../assets/images/1.jpeg'),
-        require('../../assets/images/shirt3.jpeg'),
+        props.route.params.product.img,
         require('../../assets/images/shirt2.jpeg'),
       ],
     };
@@ -46,7 +43,9 @@ export default class ProductDetails extends Component<any, any> {
             barStyle={'dark-content'}
           />
           <View style={styles.logoView}>
-            <Text style={styles.logoText}>Product Details</Text>
+            <Text style={styles.logoText}>
+              {this.props.route.params.product.name}
+            </Text>
           </View>
 
           <View style={styles.bagView}>
@@ -79,7 +78,7 @@ export default class ProductDetails extends Component<any, any> {
                 color: colors.secondary,
                 padding: 5,
               }}>
-              Category
+              {this.props.route.params.product.category}
             </Text>
             <Text
               style={{
@@ -88,7 +87,7 @@ export default class ProductDetails extends Component<any, any> {
                 textAlign: 'center',
                 color: colors.secondary,
               }}>
-              Product Name
+              {this.props.route.params.product.name}
             </Text>
             <Text
               style={{
@@ -96,7 +95,8 @@ export default class ProductDetails extends Component<any, any> {
                 textAlign: 'center',
                 color: colors.secondary,
               }}>
-              $575{'  '}
+              {this.props.route.params.product.price}
+              {'  '}
               <Text
                 style={{
                   fontSize: 12,

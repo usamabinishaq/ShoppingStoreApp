@@ -245,7 +245,9 @@ export default class HomeScreen extends Component<any, any> {
           />
         </View>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('ProductDetails')}
+          onPress={() =>
+            this.props.navigation.navigate('ProductDetails', {product: item})
+          }
           style={{flex: 0.8}}>
           <Image style={[styles.logo]} source={item.img} />
           <View

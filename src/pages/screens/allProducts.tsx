@@ -17,7 +17,7 @@ import Appbar2 from '../appbar/appbar2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export default class Wishlist extends Component<any, any> {
+export default class AllProducts extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -66,8 +66,7 @@ export default class Wishlist extends Component<any, any> {
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar2 data={'Wishlist'} />
-
+        <Appbar2 data={'All Products'} />
         <View
           style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
           <FlatList

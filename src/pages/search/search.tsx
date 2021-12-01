@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
-import Appbar from '../appbar/appbar';
+import Appbar2 from '../appbar/appbar2';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -36,7 +36,7 @@ export default class SearchScreen extends Component<any, any> {
     console.log('Search');
     return (
       <View style={styles.mainView}>
-        <Appbar />
+        <Appbar2 data={'Search'} />
         <View style={{flex: 0.9}}>
           <View style={styles.InputContainer}>
             <Icon
@@ -73,11 +73,7 @@ export default class SearchScreen extends Component<any, any> {
     return (
       <View style={styles.categoryListView}>
         <Text style={styles.categoryItem}>{item.name}</Text>
-        <Icon
-          name="chevron-forward-circle"
-          size={20}
-          color={colors.secondary}
-        />
+        <Icon name="chevron-forward" size={18} color={colors.secondary} />
       </View>
     );
   };
@@ -88,7 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   InputContainer: {
-    flex: 0.1,
+    flex: 0.08,
     elevation: 5,
     flexDirection: 'row',
     backgroundColor: colors.white,
@@ -105,10 +101,10 @@ const styles = StyleSheet.create({
   categoryListView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 15,
+    padding: 10,
     paddingLeft: 0,
     marginLeft: 20,
-    marginRight: 20,
+    marginRight: 0,
 
     borderColor: '#D8D8D8',
     borderBottomWidth: 1,
@@ -120,5 +116,5 @@ const styles = StyleSheet.create({
     margin: 20,
     color: colors.secondary,
   },
-  categoryItem: {fontSize: 16, color: colors.secondary},
+  categoryItem: {fontSize: 14, color: colors.secondary},
 });

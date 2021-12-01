@@ -180,7 +180,11 @@ export default class HomeScreen extends Component<any, any> {
             alignItems: 'center',
           }}>
           <Image
-            style={{width: 80, height: 80, borderRadius: 10}}
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: 10,
+            }}
             source={item.img}
           />
         </TouchableOpacity>
@@ -216,6 +220,7 @@ export default class HomeScreen extends Component<any, any> {
               backgroundColor: colors.secondary,
               justifyContent: 'center',
               borderTopLeftRadius: 10,
+              elevation: 5,
             }}>
             <Text
               style={{
@@ -239,27 +244,35 @@ export default class HomeScreen extends Component<any, any> {
             }
           />
         </View>
-        <Image style={[styles.logo]} source={item.img} />
-        <View
-          style={{flex: 0.25, alignItems: 'center', justifyContent: 'center'}}>
-          <Text
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('ProductDetails')}
+          style={{flex: 0.8}}>
+          <Image style={[styles.logo]} source={item.img} />
+          <View
             style={{
-              fontSize: 12,
-              color: colors.secondary,
-              fontWeight: 'bold',
+              flex: 0.3,
+              alignItems: 'center',
+              justifyContent: 'center',
             }}>
-            {item.name}
-          </Text>
-          <View style={{flexDirection: 'row'}}>
             <Text
               style={{
-                fontSize: 11,
+                fontSize: 12,
                 color: colors.secondary,
+                fontWeight: 'bold',
               }}>
-              {item.price}
+              {item.name}
             </Text>
+            <View style={{flexDirection: 'row'}}>
+              <Text
+                style={{
+                  fontSize: 11,
+                  color: colors.secondary,
+                }}>
+                {item.price}
+              </Text>
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -276,9 +289,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    flex: 0.55,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 0.7,
+    alignSelf: 'center',
   },
   card: {
     height: windowHeight / 4.5,

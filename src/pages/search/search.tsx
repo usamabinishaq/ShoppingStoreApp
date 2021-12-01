@@ -73,11 +73,7 @@ export default class SearchScreen extends Component<any, any> {
     return (
       <View style={styles.categoryListView}>
         <Text style={styles.categoryItem}>{item.name}</Text>
-        <Icon
-          name="chevron-forward-circle"
-          size={20}
-          color={colors.secondary}
-        />
+        <Icon name="chevron-forward" size={18} color={colors.secondary} />
       </View>
     );
   };
@@ -105,10 +101,10 @@ const styles = StyleSheet.create({
   categoryListView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 15,
+    padding: 10,
     paddingLeft: 0,
     marginLeft: 20,
-    marginRight: 20,
+    marginRight: 0,
 
     borderColor: '#D8D8D8',
     borderBottomWidth: 1,
@@ -120,5 +116,5 @@ const styles = StyleSheet.create({
     margin: 20,
     color: colors.secondary,
   },
-  categoryItem: {fontSize: 16, color: colors.secondary},
+  categoryItem: {fontSize: 14, color: colors.secondary},
 });

@@ -10,6 +10,7 @@ import SignInScreen from './src/pages/authentication/signin';
 import BottomTabs from './src/pages/bottomNavigation/BottomNavigation';
 import AllCategories from './src/pages/screens/allCategories';
 import AllProducts from './src/pages/screens/allProducts';
+import ProductDetails from './src/pages/screens/productDetail';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -61,6 +62,11 @@ const App = () => {
         <Stack.Screen
           name="AllProducts"
           component={AllProducts}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ProductDetails"
+          component={ProductDetails}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

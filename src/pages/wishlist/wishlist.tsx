@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
+import {DATA} from '../../models/info';
 import Appbar2 from '../appbar/appbar2';
 
 const windowWidth = Dimensions.get('window').width;
@@ -22,44 +23,7 @@ export default class Wishlist extends Component<any, any> {
     super(props);
     this.state = {
       isFav: true,
-      dataSrc: [
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt.png',
-        },
-        {
-          category: 'Wallets',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/2.jpeg',
-        },
-        {
-          category: 'Hoodies',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/7.jpeg',
-        },
-        {
-          category: 'Pants',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-        {
-          category: 'SweatPants',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-      ],
+      dataSrc: DATA,
     };
   }
 
@@ -85,62 +49,40 @@ export default class Wishlist extends Component<any, any> {
   renderChildItem = item => {
     return (
       <View style={styles.card}>
-        <View
-          style={{
-            flex: 0.2,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('ProductDetails', {product: item})
+          }
+          style={{flex: 0.8}}>
+          <Image
             style={{
-              alignItems: 'flex-start',
-              height: 30,
-              width: 60,
-              backgroundColor: colors.secondary,
-              justifyContent: 'center',
-              borderTopLeftRadius: 10,
-            }}>
-            <Text
-              style={{
-                color: colors.white,
-                fontSize: 12,
-                fontWeight: 'bold',
-                marginLeft: 10,
-              }}>
-              Buy Now
-            </Text>
-          </View>
-          <Icon
-            name="star-sharp"
-            color={colors.secondary}
-            size={18}
-            style={{margin: 7.5, justifyContent: 'center'}}
+              width: windowWidth / 2.2,
+              height: windowHeight / 3.5,
+              resizeMode: 'contain',
+            }}
+            source={item.img}
           />
-        </View>
-        <Image
-          style={[styles.logo]}
-          source={require('../../assets/images/shirt3.jpeg')}
-        />
-        <View
-          style={{flex: 0.25, alignItems: 'center', justifyContent: 'center'}}>
           <Text
             style={{
-              fontSize: 13,
+              fontSize: 16,
               color: colors.secondary,
               fontWeight: 'bold',
+              textAlign: 'center',
+              letterSpacing: 2,
             }}>
-            {item.name}
+            {item.name.toUpperCase()}
           </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.secondary,
-              }}>
-              {item.price}
-            </Text>
-          </View>
-        </View>
+
+          <Text
+            style={{
+              fontSize: 14,
+              color: colors.secondary,
+              textAlign: 'center',
+              marginTop: '2%',
+            }}>
+            {item.price}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -161,12 +103,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    height: windowHeight / 3.5,
-    width: windowWidth / 2.5,
-    elevation: 8,
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    margin: 10,
+    width: windowWidth / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
   },
   categoryTitle: {
     fontSize: 16,

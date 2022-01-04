@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
@@ -70,7 +71,7 @@ export default class SignUpScreen extends Component<any, any> {
               Design
             </Text>
             <TouchableOpacity
-              onPress={() => console.log('Sign up Method to be Call')}>
+              onPress={() => Alert.alert('Sign up', 'Sign up Successful')}>
               <View
                 style={[styles.signinButtonContainer, styles.ButtonContainer]}>
                 <Text style={{fontWeight: 'bold', color: colors.white}}>

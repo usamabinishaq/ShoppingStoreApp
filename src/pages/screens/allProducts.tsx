@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
+import {DATA} from '../../models/info';
 import Appbar2 from '../appbar/appbar2';
 
 const windowWidth = Dimensions.get('window').width;
@@ -22,44 +23,7 @@ export default class AllProducts extends Component<any, any> {
     super(props);
     this.state = {
       isFav: true,
-      dataSrc: [
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt.png',
-        },
-        {
-          category: 'Wallets',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/2.jpeg',
-        },
-        {
-          category: 'Hoodies',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/7.jpeg',
-        },
-        {
-          category: 'Pants',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-        {
-          category: 'SweatPants',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-      ],
+      dataSrc: DATA,
     };
   }
 
@@ -67,11 +31,10 @@ export default class AllProducts extends Component<any, any> {
     return (
       <View style={styles.mainView}>
         <Appbar2 data={'All Products'} />
-        <View
-          style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 0.9}}>
           <FlatList
             data={this.state.dataSrc}
-            numColumns={2}
+            numColumns={1}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => this.renderChildItem(item)}
@@ -83,62 +46,107 @@ export default class AllProducts extends Component<any, any> {
 
   renderChildItem = item => {
     return (
-      <View style={styles.card}>
+      <View
+        style={{
+          flexDirection: 'row',
+          height: windowHeight / 4.5,
+          backgroundColor: colors.white,
+          margin: 10,
+          borderRadius: 15,
+          elevation: 10,
+        }}>
         <View
           style={{
-            flex: 0.2,
-            flexDirection: 'row',
+            flex: 0.4,
+            justifyContent: 'flex-start',
+          }}>
+          <Image
+            source={item.img}
+            style={{
+              width: 122,
+              height: windowHeight / 4.5,
+              borderTopLeftRadius: 20,
+              borderBottomLeftRadius: 20,
+            }}
+            resizeMode={'stretch'}
+          />
+        </View>
+        <View
+          style={{
+            flex: 0.4,
+            paddingLeft: 5,
+          }}>
+          <View style={{flex: 1}}>
+            <View style={{flex: 0.7}}>
+              <Text
+                style={{
+                  fontSize: 12.5,
+                  color: colors.secondary,
+                  paddingTop: 10,
+                  paddingLeft: 5,
+                  paddingBottom: 2.5,
+                }}>
+                {item.category}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: colors.secondary,
+                  fontWeight: 'bold',
+                  paddingLeft: 5,
+                }}>
+                {item.name}
+              </Text>
+            </View>
+            <View style={{flex: 0.3}}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: colors.black,
+                  fontWeight: 'bold',
+                  paddingLeft: 5,
+                  padding: 10,
+                }}>
+                {item.price}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 0.3,
+            alignItems: 'flex-end',
             justifyContent: 'space-between',
           }}>
-          <View
+          <Icon
+            name={'star-outline'}
+            size={18}
+            color={colors.secondary}
+            style={{marginTop: 15, marginRight: 15}}
+          />
+          <TouchableOpacity
+            onPress={() =>
+              this.props.navigation.navigate('ShoppingBag', {product: item})
+            }
             style={{
-              alignItems: 'flex-start',
-              height: 30,
-              width: 60,
+              height: 40,
+              width: 100,
               backgroundColor: colors.secondary,
               justifyContent: 'center',
-              borderTopLeftRadius: 10,
+              borderBottomRightRadius: 15,
+              borderTopLeftRadius: 15,
             }}>
             <Text
               style={{
                 color: colors.white,
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: 'bold',
-                marginLeft: 10,
+                marginLeft: 5,
+                textAlign: 'center',
               }}>
               Buy Now
             </Text>
-          </View>
-          <Icon
-            name="star-sharp"
-            color={colors.secondary}
-            size={18}
-            style={{margin: 7.5, justifyContent: 'center'}}
-          />
-        </View>
-        <Image
-          style={[styles.logo]}
-          source={require('../../assets/images/shirt3.jpeg')}
-        />
-        <View
-          style={{flex: 0.25, alignItems: 'center', justifyContent: 'center'}}>
-          <Text
-            style={{
-              fontSize: 13,
-              color: colors.secondary,
-              fontWeight: 'bold',
-            }}>
-            {item.name}
-          </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.secondary,
-              }}>
-              {item.price}
-            </Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     );

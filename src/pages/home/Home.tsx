@@ -11,10 +11,14 @@ import {
   Image,
   ToastAndroid,
   FlatList,
+  TextInput,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../../colors/colors';
 import Appbar from '../appbar/appbar';
+import {DATA} from '../../models/info';
+import {Shirts} from '../../models/shirts';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -23,257 +27,402 @@ export default class HomeScreen extends Component<any, any> {
     super(props);
     this.state = {
       isFav: false,
-      dataSrc: [
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: require('../../assets/images/shirt.png'),
-        },
-        {
-          category: 'Pants',
-          name: 'Black Cotton Pant',
-          price: '$97.30 – $139.00',
-          img: require('../../assets/images/2.jpeg'),
-        },
-        {
-          category: 'Wallets',
-          name: 'Blue Wallet',
-          price: '$97.30 – $139.00',
-          img: require('../../assets/images/7.jpeg'),
-        },
-        {
-          category: 'Rough',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: require('../../assets/images/shirt3.jpeg'),
-        },
-      ],
+      dataSrc: DATA,
+      shirts: Shirts,
     };
   }
 
   render() {
     return (
-      <View style={styles.mainView}>
+      <SafeAreaView style={styles.mainView}>
         <Appbar />
-        <View
-          style={{
-            flex: 0.1,
-            backgroundColor: colors.secondary,
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              color: colors.primary,
-              fontSize: 12,
-              fontWeight: '700',
-              textAlign: 'center',
-            }}>
-            5 – 30 DAYS FREE WORLDWIDE DELIVRY
-          </Text>
-        </View>
-        <ScrollView style={{flex: 0.8}}>
-          <View>
-            <View style={{flex: 0.3}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.categoryTitle}>Categories</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    onPress={() =>
-                      this.props.navigation.navigate('AllCategories')
-                    }
-                    style={[styles.categoryTitle, {marginRight: 2}]}>
-                    Show all
-                  </Text>
-                  <Icon
-                    name={'chevron-forward'}
-                    size={15}
-                    color={colors.secondary}
-                    style={{marginTop: 10, marginRight: 5}}
-                  />
-                </View>
-              </View>
-
-              <FlatList
-                data={this.state.dataSrc}
-                numColumns={1}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) => this.renderCategories(item)}
-              />
-            </View>
-            <View style={{flex: 0.7}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <Text style={styles.categoryTitle}>New Arrivals</Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    onPress={() =>
-                      this.props.navigation.navigate('AllCategories')
-                    }
-                    style={[styles.categoryTitle, {marginRight: 2}]}>
-                    Show all
-                  </Text>
-                  <Icon
-                    name={'chevron-forward'}
-                    size={15}
-                    color={colors.secondary}
-                    style={{marginTop: 10, marginRight: 5}}
-                  />
-                </View>
-              </View>
-              <FlatList
-                data={this.state.dataSrc}
-                numColumns={1}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) => this.renderChildItem(item)}
-              />
-            </View>
-          </View>
-        </ScrollView>
-      </View>
-    );
-  }
-
-  renderCategories = item => {
-    return (
-      <View
-        style={{
-          backgroundColor: colors.primary,
-          width: 80,
-          height: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginLeft: 10,
-          marginTop: 10,
-          marginBottom: 10,
-        }}>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('AllProducts')}
+          onPress={() => {}}
           style={{
-            width: 80,
-            height: 80,
-            elevation: 5,
-            backgroundColor: colors.white,
-            borderRadius: 10,
+            width: 50,
+            height: 50,
+            borderRadius: 50 / 2,
+            backgroundColor: colors.lightRed,
             justifyContent: 'center',
             alignItems: 'center',
+            position: 'absolute',
+            bottom: 15,
+            right: 15,
+            zIndex: 1,
           }}>
-          <Image
+          <Icon name={'gift'} size={25} color={colors.white} />
+          {/* <Image
+            source={require('../../assets/images/favcart.png')}
             style={{
-              width: 80,
-              height: 80,
-              borderRadius: 10,
+              width: 30,
+              height: 30,
+              resizeMode: 'contain',
+              borderRadius: 35 / 2,
             }}
-            source={item.img}
-          />
+          /> */}
         </TouchableOpacity>
-        <View>
-          <Text
-            style={{
-              paddingTop: 5,
-              fontSize: 12.5,
-              fontWeight: 'bold',
-              color: colors.secondary,
-            }}>
-            {item.category}
-          </Text>
-        </View>
-      </View>
-    );
-  };
-
-  renderChildItem = item => {
-    return (
-      <View style={styles.card}>
-        <View
-          style={{
-            flex: 0.2,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <ScrollView style={{flex: 0.9}} showsVerticalScrollIndicator={false}>
           <View
             style={{
-              alignItems: 'flex-start',
-              height: 25,
-              width: 50,
-              backgroundColor: colors.secondary,
+              height: 40,
+              backgroundColor: colors.lightRed,
               justifyContent: 'center',
-              borderTopLeftRadius: 10,
-              elevation: 5,
             }}>
             <Text
               style={{
                 color: colors.white,
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: 'bold',
-                marginLeft: 5,
+                textAlign: 'center',
+                letterSpacing: 5,
               }}>
-              Buy Now
+              FREE SHIPPING WORLDWIDE
             </Text>
           </View>
-          <Icon
-            name={this.state.isFav == false ? 'star-outline' : 'star-sharp'}
-            size={15}
-            color={colors.secondary}
-            style={{marginRight: 7.5, marginTop: 5}}
-            onPress={() =>
-              this.state.isFav == true
-                ? this.setState({isFav: false})
-                : this.setState({isFav: true})
-            }
+          <ImageBackground
+            style={{
+              flex: 0.7,
+              width: windowWidth,
+              height: windowHeight,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            source={require('../../assets/images/img3.jpg')}
+            resizeMode="cover">
+            <Text
+              style={{
+                color: colors.white,
+                fontSize: 35,
+                fontWeight: '700',
+                textAlign: 'center',
+                letterSpacing: 7.5,
+              }}>
+              PIERO LUXURY DESIGN
+            </Text>
+            <Text
+              style={{
+                marginTop: '2%',
+                color: colors.white,
+                fontSize: 18,
+                textAlign: 'center',
+                letterSpacing: 1,
+              }}>
+              The combination of design {'&'} quality
+            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('ShoppingBag')}
+              style={{
+                marginTop: '5%',
+                borderWidth: 2,
+                borderColor: colors.white,
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  color: colors.white,
+                  padding: 10,
+                  letterSpacing: 2.5,
+                }}>
+                SHOP NOW
+              </Text>
+            </TouchableOpacity>
+          </ImageBackground>
+
+          <View
+            style={{
+              justifyContent: 'center',
+              alignSelf: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 25,
+                textAlign: 'center',
+                color: colors.black,
+                padding: 15,
+                fontWeight: '800',
+                letterSpacing: 5,
+              }}>
+              FEATURED{'\n'}COLLECTION
+            </Text>
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderColor: colors.black,
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  color: colors.black,
+                  padding: 10,
+                  paddingLeft: 15,
+                  paddingRight: 15,
+                  letterSpacing: 2.5,
+                }}>
+                View All
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView horizontal={true}>
+            <FlatList
+              data={this.state.dataSrc}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => this.renderChildItem(item)}
+            />
+          </ScrollView>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignSelf: 'center',
+              margin: '5%',
+              marginTop: '15%',
+            }}>
+            <Image
+              style={{
+                width: windowWidth / 1.1,
+                height: windowHeight / 1.5,
+              }}
+              source={require('../../assets/images/img2.jpg')}
+            />
+            <Text
+              style={{
+                color: colors.black,
+                fontSize: 12.5,
+                letterSpacing: 5,
+                textAlign: 'center',
+                padding: 10,
+                marginTop: '2%',
+              }}>
+              {'New & Trending'.toUpperCase()}
+            </Text>
+            <Text
+              style={{
+                fontSize: 25,
+                textAlign: 'center',
+                color: colors.black,
+                padding: 10,
+                fontWeight: '800',
+                letterSpacing: 5,
+              }}>
+              HOODIES COLLECTION
+            </Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: colors.secondPrimary,
+                justifyContent: 'center',
+                alignSelf: 'center',
+                width: '50%',
+              }}>
+              <Text
+                style={{
+                  color: colors.white,
+                  padding: 10,
+                  paddingLeft: 15,
+                  paddingRight: 15,
+                  letterSpacing: 2.5,
+                }}>
+                {'View Collection'.toUpperCase()}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignSelf: 'center',
+              alignItems: 'center',
+              marginTop: '10%',
+            }}>
+            <Text
+              style={{
+                fontSize: 25,
+                textAlign: 'center',
+                color: colors.black,
+                padding: 15,
+                fontWeight: '800',
+                letterSpacing: 5,
+              }}>
+              FEATURED{'\n'}COLLECTION
+            </Text>
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderColor: colors.black,
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  color: colors.black,
+                  padding: 10,
+                  paddingLeft: 15,
+                  paddingRight: 15,
+                  letterSpacing: 2.5,
+                }}>
+                View All
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            data={this.state.shirts}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) => this.renderChildItem(item)}
           />
-        </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignSelf: 'center',
+              margin: '5%',
+              marginTop: '15%',
+            }}>
+            <Image
+              style={{
+                width: windowWidth / 1.1,
+                height: windowHeight / 1.5,
+              }}
+              source={require('../../assets/images/img4.jpg')}
+            />
+            <Text
+              style={{
+                color: colors.black,
+                fontSize: 12.5,
+                letterSpacing: 5,
+                textAlign: 'center',
+                padding: 10,
+                marginTop: '2%',
+              }}>
+              {'BLOCKBUSTERS'.toUpperCase()}
+            </Text>
+            <Text
+              style={{
+                fontSize: 25,
+                textAlign: 'center',
+                color: colors.black,
+                padding: 10,
+                fontWeight: '800',
+                letterSpacing: 5,
+              }}>
+              BEST SELLERS
+            </Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: colors.secondPrimary,
+                justifyContent: 'center',
+                alignSelf: 'center',
+                width: '50%',
+              }}>
+              <Text
+                style={{
+                  color: colors.white,
+                  padding: 10,
+                  paddingLeft: 15,
+                  paddingRight: 15,
+                  letterSpacing: 2.5,
+                }}>
+                {'View Collection'.toUpperCase()}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Text
+            style={{
+              fontSize: 25,
+              textAlign: 'center',
+              color: colors.black,
+              fontWeight: '800',
+              letterSpacing: 5,
+              marginTop: '5%',
+            }}>
+            SIGN UP AND SAVE
+          </Text>
+          <Text
+            style={{
+              color: colors.black,
+              fontSize: 14,
+              letterSpacing: 1,
+              textAlign: 'center',
+              paddingLeft: '8.5%',
+              paddingRight: '8.5%',
+              marginTop: '1%',
+              marginBottom: '3.5%',
+            }}>
+            {
+              'Subscribe to get special offers, giveaways, and once-in-a-lifetime deals.'
+            }
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              width: '75%',
+              height: 35,
+              alignSelf: 'center',
+            }}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Enter your email"
+              placeholderTextColor={colors.lightGray}
+            />
+            <TouchableOpacity
+              style={{
+                marginLeft: 5,
+                backgroundColor: colors.secondPrimary,
+                height: 35,
+                width: 50,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Icon
+                style={{
+                  color: colors.white,
+                }}
+                name="arrow-right"
+                size={20}
+              />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+  renderChildItem = item => {
+    return (
+      <View style={styles.card}>
         <TouchableOpacity
           onPress={() =>
             this.props.navigation.navigate('ProductDetails', {product: item})
           }
           style={{flex: 0.8}}>
-          <Image style={[styles.logo]} source={item.img} />
-          <View
+          <Image
             style={{
-              flex: 0.3,
-              alignItems: 'center',
-              justifyContent: 'center',
+              width: windowWidth / 2.2,
+              height: windowHeight / 3.5,
+              resizeMode: 'contain',
+            }}
+            source={item.img}
+          />
+          <Text
+            style={{
+              fontSize: 16,
+              color: colors.secondary,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              letterSpacing: 2,
             }}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.secondary,
-                fontWeight: 'bold',
-              }}>
-              {item.name}
-            </Text>
-            <View style={{flexDirection: 'row'}}>
-              <Text
-                style={{
-                  fontSize: 11,
-                  color: colors.secondary,
-                }}>
-                {item.price}
-              </Text>
-            </View>
-          </View>
+            {item.name.toUpperCase()}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 14,
+              color: colors.secondary,
+              textAlign: 'center',
+              marginTop: '2%',
+            }}>
+            {item.price}
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -287,20 +436,15 @@ const styles = StyleSheet.create({
   logo: {
     marginTop: 10,
     height: 100,
-    width: windowWidth / 3.2,
-    borderRadius: 10,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    width: windowWidth / 2,
     flex: 0.7,
     alignSelf: 'center',
   },
   card: {
-    height: windowHeight / 4.5,
-    width: windowWidth / 3.2,
-    elevation: 8,
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    margin: 10,
+    width: windowWidth / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
   },
   categoryTitle: {
     fontSize: 14,
@@ -308,5 +452,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 15,
     color: colors.secondary,
+  },
+  textInput: {
+    borderColor: colors.black,
+    borderWidth: 1,
+    width: '80%',
+    height: 35,
+    color: colors.black,
+    fontSize: 14,
+    letterSpacing: 1,
   },
 });

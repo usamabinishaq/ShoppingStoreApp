@@ -7,7 +7,6 @@ import {
   ImageBackground,
   TouchableOpacity,
   Image,
-  
 } from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import colors from '../../colors/colors';
@@ -23,12 +22,9 @@ export default class splashScreen extends Component<any, any> {
   setTimeCall = () => {
     setTimeout(() => {
       this.props.navigation.replace('BottomNavigation');
-
     }, 2000);
-
   };
   render() {
-    console.log('Splash');
     return (
       <View
         style={{
@@ -52,7 +48,6 @@ export default class splashScreen extends Component<any, any> {
             color={colors.secondary}
           />
         </View>
-
       </View>
     );
   }

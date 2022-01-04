@@ -10,58 +10,43 @@ import {
 import React, {useEffect} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../colors/colors';
+import globalStyles from '../../styles/globalStyles';
 
 export default function ProfileAppbar() {
   return (
-    <View style={styles.appbar}>
+    <View style={globalStyles.appbar}>
       <StatusBar
         animated={true}
         backgroundColor={colors.primary}
         barStyle={'dark-content'}
       />
-      <View style={styles.profileView}>
+      <View style={globalStyles.profileView}>
         <Image
-          style={styles.img}
+          style={globalStyles.img}
           source={require('../../assets/images/img.jpg')}
         />
       </View>
       <View style={{justifyContent: 'center'}}>
-        <Text style={styles.username}>Mathew Charles</Text>
+        <Text style={globalStyles.username}>Mathew Charles</Text>
+        <TouchableOpacity
+          onPress={() => console.log('Edit Profile')}
+          style={globalStyles.editProfileView}>
+          <Icon name="pen" color={colors.black} size={10} />
+          <Text
+            style={{
+              color: colors.black,
+              fontSize: 12,
+              fontWeight: 'bold',
+              marginLeft: 5,
+            }}>
+            Edit Profile
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.bagView}>
+      <View style={globalStyles.profileBagView}>
         <Icon name="shopping-bag" color={colors.secondary} size={24} />
       </View>
     </View>
   );
 }
-const styles = StyleSheet.create({
-  appbar: {
-    flex: 0.1,
-    flexDirection: 'row',
-  },
-  username: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.secondary,
-    letterSpacing: 1,
-  },
-  bagView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-
-    marginRight: 10,
-  },
-  profileView: {
-    flex: 0.1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 25,
-  },
-  img: {
-    height: 40,
-    width: 40,
-    borderRadius: 50,
-  },
-});

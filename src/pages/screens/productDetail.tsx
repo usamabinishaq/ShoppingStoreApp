@@ -11,6 +11,7 @@ import {
   Image,
   FlatList,
   TextInput,
+  Alert,
 } from 'react-native';
 import {SliderBox} from 'react-native-image-slider-box';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -50,6 +51,7 @@ export default class ProductDetails extends Component<any, any> {
 
           <View style={styles.bagView}>
             <IconFontAwesome
+              onPress={() => this.props.navigation.navigate('ShoppingBag')}
               name="shopping-bag"
               color={colors.secondary}
               size={24}
@@ -67,6 +69,7 @@ export default class ProductDetails extends Component<any, any> {
               resizeMode={'contain'}
               imageLoadingColor="#2196F3"
               backgroundColor={colors.white}
+              circleloop={true}
             />
           </View>
           <View>
@@ -96,15 +99,14 @@ export default class ProductDetails extends Component<any, any> {
                 color: colors.secondary,
               }}>
               {this.props.route.params.product.price}
-              {'  '}
-              <Text
-                style={{
-                  fontSize: 12,
-                  textAlign: 'center',
-                  color: colors.lightGray,
-                }}>
-                (imported duties Included)
-              </Text>
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                textAlign: 'center',
+                color: colors.lightGray,
+              }}>
+              Shipping calculated at checkout.
             </Text>
           </View>
           <TouchableOpacity
@@ -137,7 +139,7 @@ export default class ProductDetails extends Component<any, any> {
 
         <TouchableOpacity
           style={{flex: 0.1, justifyContent: 'flex-end'}}
-          onPress={() => console.log('Sign in Method to be Call')}>
+          onPress={() => Alert.alert('Information', 'Added to bag')}>
           <View style={[styles.signinButtonContainer, styles.ButtonContainer]}>
             <Text style={{fontWeight: 'bold', color: colors.white}}>
               Add To Bag

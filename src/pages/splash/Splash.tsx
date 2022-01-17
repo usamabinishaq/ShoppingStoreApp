@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  StatusBar,
-  ImageBackground,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, StyleSheet, StatusBar, Image, Dimensions} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import colors from '../../colors/colors';
 
@@ -21,7 +13,7 @@ export default class splashScreen extends Component<any, any> {
 
   setTimeCall = () => {
     setTimeout(() => {
-      this.props.navigation.replace('BottomNavigation');
+      this.props.navigation.replace('SignInScreen');
     }, 2000);
   };
   render() {
@@ -29,36 +21,30 @@ export default class splashScreen extends Component<any, any> {
       <View
         style={{
           flex: 1,
-          backgroundColor: colors.primary,
+          backgroundColor: colors.black,
         }}>
+        <StatusBar hidden={true} />
         <View
           style={{
-            flex: 0.8,
+            flex: 0.9,
             justifyContent: 'center',
           }}>
           <Image
             style={styles.logo}
-            source={require('../../assets/images/logo.png')}
+            source={require('../../assets/images/logo1.png')}
           />
         </View>
-        <View style={{flex: 0.2}}>
-          <ActivityIndicator
-            style={styles.loader}
-            size="small"
-            color={colors.secondary}
-          />
+        <View style={{flex: 0.1}}>
+          <ActivityIndicator size="small" color={colors.primary} />
         </View>
       </View>
     );
   }
 }
 const styles = StyleSheet.create({
-  loader: {
-    marginTop: 20,
-  },
   logo: {
-    height: 200,
-    width: 200,
+    height: Dimensions.get('window').height / 2.35,
+    width: Dimensions.get('window').width,
     alignSelf: 'center',
   },
 });

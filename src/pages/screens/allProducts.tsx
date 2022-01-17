@@ -26,15 +26,21 @@ export default class AllProducts extends Component<any, any> {
       dataSrc: DATA,
     };
   }
-
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar2 data={'All Products'} />
+        <Appbar2
+          data={'All Products'}
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
         <View style={{flex: 0.9}}>
           <FlatList
             data={this.state.dataSrc}
-            numColumns={1}
+            numColumns={2}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => this.renderChildItem(item)}
@@ -46,108 +52,41 @@ export default class AllProducts extends Component<any, any> {
 
   renderChildItem = item => {
     return (
-      <View
-        style={{
-          flexDirection: 'row',
-          height: windowHeight / 4.5,
-          backgroundColor: colors.white,
-          margin: 10,
-          borderRadius: 15,
-          elevation: 10,
-        }}>
-        <View
-          style={{
-            flex: 0.4,
-            justifyContent: 'flex-start',
-          }}>
+      <View style={styles.card}>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('ProductDetails', {product: item})
+          }
+          style={{flex: 0.8}}>
           <Image
-            source={item.img}
             style={{
-              width: 122,
-              height: windowHeight / 4.5,
-              borderTopLeftRadius: 20,
-              borderBottomLeftRadius: 20,
+              width: windowWidth / 2.2,
+              height: windowHeight / 3.5,
+              resizeMode: 'contain',
             }}
-            resizeMode={'stretch'}
+            source={item.img}
           />
-        </View>
-        <View
-          style={{
-            flex: 0.4,
-            paddingLeft: 5,
-          }}>
-          <View style={{flex: 1}}>
-            <View style={{flex: 0.7}}>
-              <Text
-                style={{
-                  fontSize: 12.5,
-                  color: colors.secondary,
-                  paddingTop: 10,
-                  paddingLeft: 5,
-                  paddingBottom: 2.5,
-                }}>
-                {item.category}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  color: colors.secondary,
-                  fontWeight: 'bold',
-                  paddingLeft: 5,
-                }}>
-                {item.name}
-              </Text>
-            </View>
-            <View style={{flex: 0.3}}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: colors.black,
-                  fontWeight: 'bold',
-                  paddingLeft: 5,
-                  padding: 10,
-                }}>
-                {item.price}
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View
-          style={{
-            flex: 0.3,
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-          }}>
-          <Icon
-            name={'star-outline'}
-            size={18}
-            color={colors.secondary}
-            style={{marginTop: 15, marginRight: 15}}
-          />
-          <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.navigate('ShoppingBag', {product: item})
-            }
+          <Text
             style={{
-              height: 40,
-              width: 100,
-              backgroundColor: colors.secondary,
-              justifyContent: 'center',
-              borderBottomRightRadius: 15,
-              borderTopLeftRadius: 15,
+              fontSize: 16,
+              color: colors.secondary,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              letterSpacing: 2,
             }}>
-            <Text
-              style={{
-                color: colors.white,
-                fontSize: 14,
-                fontWeight: 'bold',
-                marginLeft: 5,
-                textAlign: 'center',
-              }}>
-              Buy Now
-            </Text>
-          </TouchableOpacity>
-        </View>
+            {item.name.toUpperCase()}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 14,
+              color: colors.secondary,
+              textAlign: 'center',
+              marginTop: '2%',
+            }}>
+            {item.price}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -168,12 +107,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    height: windowHeight / 3.5,
-    width: windowWidth / 2.5,
-    elevation: 8,
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    margin: 10,
+    width: windowWidth / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
   },
   categoryTitle: {
     fontSize: 16,

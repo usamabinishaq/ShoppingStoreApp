@@ -4,24 +4,15 @@ import {
   Text,
   StyleSheet,
   StatusBar,
-  ImageBackground,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
   Image,
   FlatList,
-  TextInput,
-  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../colors/colors';
-import Appbar2 from '../appbar/appbar2';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {throwStatement} from '@babel/types';
 import {DATA} from '../../models/info';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 export default class ShoppingBag extends Component<any, any> {
   constructor(props: any) {
     super(props);

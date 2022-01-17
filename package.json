@@ -15,7 +15,9 @@
     "@react-navigation/material-bottom-tabs": "^6.0.9",
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/native-stack": "^6.2.5",
+    "@shopify/shopify-api": "^2.0.0",
     "@types/webrtc": "^0.0.31",
+    "axios": "^0.24.0",
     "react": "17.0.2",
     "react-native": "0.66.3",
     "react-native-cardview": "^2.0.5",
@@ -28,6 +30,7 @@
     "react-native-safe-area-view": "^1.1.1",
     "react-native-screens": "^3.9.0",
     "react-native-vector-icons": "^9.0.0",
+    "react-native-video": "^5.2.0",
     "react-native-webview": "^11.15.0",
     "react-select-country-list": "^2.2.3",
     "toggle-switch-react-native": "^3.3.0"

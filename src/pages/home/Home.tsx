@@ -3,13 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
   ImageBackground,
   TouchableOpacity,
   ScrollView,
   Dimensions,
   Image,
-  ToastAndroid,
   FlatList,
   TextInput,
 } from 'react-native';
@@ -19,9 +17,12 @@ import colors from '../../colors/colors';
 import Appbar from '../appbar/appbar';
 import {DATA} from '../../models/info';
 import {Shirts} from '../../models/shirts';
+import {LogBox} from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+LogBox.ignoreLogs(['Warning: ...']);
+
 export default class HomeScreen extends Component<any, any> {
   constructor(props: any) {
     super(props);
@@ -30,12 +31,22 @@ export default class HomeScreen extends Component<any, any> {
       dataSrc: DATA,
       shirts: Shirts,
     };
+    this.getProducts();
   }
 
+  componentDidMount() {}
+
+  getProducts = async () => {};
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
   render() {
     return (
       <SafeAreaView style={styles.mainView}>
-        <Appbar />
+        <Appbar
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
         <TouchableOpacity
           onPress={() => {}}
           style={{
@@ -51,15 +62,6 @@ export default class HomeScreen extends Component<any, any> {
             zIndex: 1,
           }}>
           <Icon name={'gift'} size={25} color={colors.white} />
-          {/* <Image
-            source={require('../../assets/images/favcart.png')}
-            style={{
-              width: 30,
-              height: 30,
-              resizeMode: 'contain',
-              borderRadius: 35 / 2,
-            }}
-          /> */}
         </TouchableOpacity>
         <ScrollView style={{flex: 0.9}} showsVerticalScrollIndicator={false}>
           <View
@@ -76,7 +78,7 @@ export default class HomeScreen extends Component<any, any> {
                 textAlign: 'center',
                 letterSpacing: 5,
               }}>
-              FREE SHIPPING WORLDWIDE
+              PROMO CODE: PIERO10OFF
             </Text>
           </View>
           <ImageBackground
@@ -87,7 +89,7 @@ export default class HomeScreen extends Component<any, any> {
               alignItems: 'center',
               justifyContent: 'center',
             }}
-            source={require('../../assets/images/img3.jpg')}
+            source={require('../../assets/images/img3.png')}
             resizeMode="cover">
             <Text
               style={{
@@ -110,7 +112,7 @@ export default class HomeScreen extends Component<any, any> {
               The combination of design {'&'} quality
             </Text>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('ShoppingBag')}
+              onPress={() => this.props.navigation.navigate('AllProducts')}
               style={{
                 marginTop: '5%',
                 borderWidth: 2,
@@ -143,7 +145,7 @@ export default class HomeScreen extends Component<any, any> {
                 fontWeight: '800',
                 letterSpacing: 5,
               }}>
-              FEATURED{'\n'}COLLECTION
+              LUXURY{'\n'}COLLECTION
             </Text>
             <TouchableOpacity
               style={{
@@ -185,7 +187,7 @@ export default class HomeScreen extends Component<any, any> {
                 width: windowWidth / 1.1,
                 height: windowHeight / 1.5,
               }}
-              source={require('../../assets/images/img2.jpg')}
+              source={require('../../assets/images/s2.jpg')}
             />
             <Text
               style={{
@@ -207,7 +209,7 @@ export default class HomeScreen extends Component<any, any> {
                 fontWeight: '800',
                 letterSpacing: 5,
               }}>
-              HOODIES COLLECTION
+              LUXURY HOODIES COLLECTION
             </Text>
             <TouchableOpacity
               style={{
@@ -244,7 +246,7 @@ export default class HomeScreen extends Component<any, any> {
                 fontWeight: '800',
                 letterSpacing: 5,
               }}>
-              FEATURED{'\n'}COLLECTION
+              YOUR FAVORITE COLLECTIONS
             </Text>
             <TouchableOpacity
               style={{
@@ -283,7 +285,7 @@ export default class HomeScreen extends Component<any, any> {
                 width: windowWidth / 1.1,
                 height: windowHeight / 1.5,
               }}
-              source={require('../../assets/images/img4.jpg')}
+              source={require('../../assets/images/img1.jpg')}
             />
             <Text
               style={{
@@ -294,7 +296,7 @@ export default class HomeScreen extends Component<any, any> {
                 padding: 10,
                 marginTop: '2%',
               }}>
-              {'BLOCKBUSTERS'.toUpperCase()}
+              {'LUXURY SWEATPANTS'.toUpperCase()}
             </Text>
             <Text
               style={{
@@ -387,6 +389,7 @@ export default class HomeScreen extends Component<any, any> {
       </SafeAreaView>
     );
   }
+
   renderChildItem = item => {
     return (
       <View style={styles.card}>
@@ -421,7 +424,7 @@ export default class HomeScreen extends Component<any, any> {
               textAlign: 'center',
               marginTop: '2%',
             }}>
-            {item.price}
+            {'$' + item.price}
           </Text>
         </TouchableOpacity>
       </View>
@@ -432,6 +435,12 @@ const styles = StyleSheet.create({
   mainView: {
     flex: 1,
     backgroundColor: colors.primary,
+  },
+  backgroundVideo: {
+    width: 200,
+    height: 200,
+    left: 50,
+    top: 50,
   },
   logo: {
     marginTop: 10,

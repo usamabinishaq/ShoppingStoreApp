@@ -54,7 +54,9 @@ export default class SignInScreen extends Component<any, any> {
               />
             </View>
             <TouchableOpacity
-              onPress={() => Alert.alert('Sign in', 'Sign in Successful')}>
+              onPress={() =>
+                this.props.navigation.navigate('BottomNavigation')
+              }>
               <View
                 style={[styles.signinButtonContainer, styles.ButtonContainer]}>
                 <Text style={{fontWeight: 'bold', color: colors.white}}>

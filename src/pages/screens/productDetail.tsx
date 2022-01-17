@@ -33,31 +33,17 @@ export default class ProductDetails extends Component<any, any> {
       ],
     };
   }
-
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
   render() {
     return (
       <View style={styles.mainView}>
-        <View style={styles.appbar}>
-          <StatusBar
-            animated={true}
-            backgroundColor={colors.white}
-            barStyle={'dark-content'}
-          />
-          <View style={styles.logoView}>
-            <Text style={styles.logoText}>
-              {this.props.route.params.product.name}
-            </Text>
-          </View>
-
-          <View style={styles.bagView}>
-            <IconFontAwesome
-              onPress={() => this.props.navigation.navigate('ShoppingBag')}
-              name="shopping-bag"
-              color={colors.secondary}
-              size={24}
-            />
-          </View>
-        </View>
+        <Appbar2
+          data={'View Product'}
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
         <ScrollView style={{flex: 0.9}}>
           <View style={{flex: 0.7}}>
             <SliderBox

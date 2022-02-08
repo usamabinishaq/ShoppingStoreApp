@@ -20,10 +20,11 @@ export default class SupportView extends Component<any, any> {
     this.state = {};
   }
   render() {
+    console.log(this.props.route.params.data);
     return (
       <View style={{flex: 1}}>
         <WebView
-          source={{uri: this.props.route.params.data.url}}
+          source={{uri: this.props.route.params.data}}
           onError={() => {
             alert('Netwrok Error');
           }}

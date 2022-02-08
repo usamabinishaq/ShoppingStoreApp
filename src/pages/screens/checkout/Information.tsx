@@ -12,34 +12,164 @@ import CheckBox from '@react-native-community/checkbox';
 import countryList from 'react-select-country-list';
 import colors from '../../../colors/colors';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {TOUCHABLE_STATE} from 'react-native-gesture-handler/lib/typescript/components/touchables/GenericTouchable';
+import {
+  addCheckoutLineItems,
+  api,
+  createCheckout,
+} from '../../../services/StoreFrontAPI/APIService';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {openDatabase} from 'react-native-sqlite-storage';
+
+const db = openDatabase({name: 'cart.db', createFromLocation: 1});
+
 export default class Information extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
+      cart: [],
+      loggedInUser: null,
       cbEMailMe: false,
       cbSaveInfo: false,
       cbTextMe: false,
       isSHow: false,
-      selectedCountry: [{label: 'Select', value: ''}],
+      selectedCountry: {label: null, value: null},
       countries: countryList().getData(),
+      isLogin: false,
+      information: {
+        email: null,
+        country: null,
+        countryCode: null,
+        fname: null,
+        lname: null,
+        address: null,
+        apartment: null,
+        city: null,
+        state: null,
+        zip: null,
+        phone: null,
+      },
     };
   }
+  componentDidMount = async () => {
+    let val = await AsyncStorage.getItem('@CustomerAccesstoken');
+    let user = await AsyncStorage.getItem('@user');
+    user ? this.setState({loggedInUser: JSON.parse(user)}) : null;
+    val ? this.setState({isLogin: true}) : null;
+    this.loadCart();
+  };
+  makeCheckout = async () => {
+    var data = createCheckout(this.state.information);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data.checkoutCreate.checkout) {
+          const add =
+            response.data.data.checkoutCreate.checkout.shippingAddress
+              .formatted;
+          var newAddress = add.map((i, index) => {
+            return index != add.length - 1 ? `${i}, ` : `${i}`;
+          });
+          const cid = response.data.data.checkoutCreate.checkout.id;
+
+          this.setState(prevState => ({
+            information: {
+              ...prevState.information,
+              address: newAddress,
+            },
+          }));
+          this.addLineItems(cid);
+        } else {
+          console.log(
+            'Error Occurred ' +
+              response.data.data.checkoutCreate.checkout.checkoutUserErrors,
+          );
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  addLineItems = async cid => {
+    var data = addCheckoutLineItems(cid, this.state.cart);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data.checkoutLineItemsAdd.checkout) {
+          if (this.props.onChange) {
+            this.props.onChange(this.state.information);
+          }
+        } else {
+          console.log(
+            'Error Occurred ' +
+              response.data.data.checkoutLineItemsAdd.checkout
+                .checkoutUserErrors,
+          );
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  loadCart = async () => {
+    await db.transaction(tx => {
+      tx.executeSql(
+        'SELECT quantity,variantId FROM cart',
+        [],
+        (tx, results) => {
+          var len = results.rows.length;
+          if (len > 0) {
+            for (let i = 0; i < len; i++) {
+              this.state.cart.push(results.rows.item(i));
+            }
+          }
+        },
+      );
+    });
+  };
   render() {
-    console.log(this.state.countries[0]);
+    // console.log(countryList().getData());
     return (
       <View>
         <View style={{margin: '3%'}}>
           <Text style={styles.topHeading}>Contact Information</Text>
-          <Text style={{color: colors.black, letterSpacing: 0.2}}>
-            Already have an account?
-            <Text style={{color: colors.secondPrimary}}> Login</Text>
-          </Text>
-          <TextInput
-            style={styles.txtInput2}
-            placeholder="Email or phone number"
-            placeholderTextColor={colors.lightGray}
-          />
+          {!this.state.isLogin ? (
+            <View>
+              {/* <Text style={{color: colors.black, letterSpacing: 0.2}}>
+                Already have an account?
+                <Text
+                  onPress={() => {
+                    this.props.navigation.navigate('SignInScreen');
+                  }}
+                  style={{color: colors.secondPrimary}}>
+                  {' Login'}
+                </Text>
+              </Text> */}
+              <TextInput
+                style={styles.txtInput2}
+                placeholder="Email or phone number"
+                placeholderTextColor={colors.lightGray}
+                onChangeText={text => {
+                  this.setState(prevState => ({
+                    information: {
+                      ...prevState.information,
+                      email: text,
+                    },
+                  }));
+                }}
+              />
+            </View>
+          ) : null}
+
           <View
             style={{
               flexDirection: 'row',
@@ -86,12 +216,16 @@ export default class Information extends Component<any, any> {
             <Text
               style={{
                 flex: 0.9,
-                color: colors.lightGray,
+                color: this.state.information.country
+                  ? colors.black
+                  : colors.lightGray,
                 fontSize: 14,
                 letterSpacing: 0.5,
                 paddingLeft: '2.5%',
               }}>
-              Country/Region
+              {this.state.information.country
+                ? this.state.information.country
+                : 'Country/Region'}
             </Text>
             <View
               style={{
@@ -103,7 +237,7 @@ export default class Information extends Component<any, any> {
               <Icon name={'menu-down'} color={colors.black} size={18} />
             </View>
           </TouchableOpacity>
-          {/* {this.state.isShow ? (
+          {this.state.isShow ? (
             <ScrollView
               horizontal={true}
               style={{
@@ -112,7 +246,7 @@ export default class Information extends Component<any, any> {
                 top: 80,
                 padding: 10,
                 position: 'absolute',
-                backgroundColor: colors.whiteSmoke,
+                backgroundColor: colors.white,
                 borderBottomLeftRadius: 5,
                 borderBottomRightRadius: 5,
                 elevation: 5,
@@ -120,53 +254,118 @@ export default class Information extends Component<any, any> {
               }}>
               <FlatList
                 data={this.state.countries}
-                numColumns={2}
+                numColumns={1}
+                nestedScrollEnabled={true}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={({item, index}) => this.renderChildItem(item)}
+                renderItem={({item, index}) => this.renderCountries(item)}
               />
             </ScrollView>
-          ) : null} */}
+          ) : null}
           <TextInput
             style={styles.txtInput2}
             placeholder="First Name"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  fname: text,
+                },
+              }));
+            }}
           />
           <TextInput
             style={styles.txtInput2}
             placeholder="Last Name"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  lname: text,
+                },
+              }));
+            }}
           />
           <TextInput
             style={styles.txtInput2}
             placeholder="Address"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  address: text,
+                },
+              }));
+            }}
           />
           <TextInput
             style={styles.txtInput2}
             placeholder="Apartment, suite, etc. (optional)"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  apartment: text,
+                },
+              }));
+            }}
           />
           <TextInput
             style={styles.txtInput2}
             placeholder="City"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  city: text,
+                },
+              }));
+            }}
           />
 
           <TextInput
             style={styles.txtInput2}
             placeholder="State"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  state: text,
+                },
+              }));
+            }}
           />
           <TextInput
             style={styles.txtInput2}
             placeholder="Zip Code"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  zip: text,
+                },
+              }));
+            }}
           />
           <TextInput
             style={styles.txtInput2}
             placeholder="Phone (optional)"
             placeholderTextColor={colors.lightGray}
+            onChangeText={text => {
+              this.setState(prevState => ({
+                information: {
+                  ...prevState.information,
+                  phone: text,
+                },
+              }));
+            }}
           />
           <View style={styles.checkBox}>
             <CheckBox
@@ -216,18 +415,57 @@ export default class Information extends Component<any, any> {
             and{' '}
             <Text style={{color: colors.secondPrimary}}>Terms of Service</Text>.
           </Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (
+                this.state.information.fname != null &&
+                this.state.information.lname != null &&
+                this.state.information.email != null &&
+                this.state.information.country != null &&
+                this.state.information.address != null &&
+                this.state.information.city != null &&
+                this.state.information.state != null &&
+                this.state.information.zip != null
+              ) {
+                this.makeCheckout();
+              } else {
+                alert('Fill All Required Fields');
+              }
+            }}
+            style={{
+              backgroundColor: colors.secondPrimary,
+              justifyContent: 'center',
+              alignItems: 'center',
+              margin: '5%',
+              marginBottom: 0,
+              borderRadius: 5,
+            }}>
+            <Text style={{color: colors.white, padding: '5%'}}>
+              {'Continue To Shipping'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
   }
-  renderChildItem = item => {
+  renderCountries = item => {
     return (
       <Text
         onPress={() => {
-          console.log(item);
+          this.setState(prevState => ({
+            isShow: false,
+            information: {
+              ...prevState.information,
+              country: item.label,
+              countryCode: item.value,
+            },
+          }));
         }}
-        style={{color: colors.black, padding: '2.5%'}}>
-        {item.label}
+        style={{
+          color: colors.black,
+          padding: '2.5%',
+        }}>
+        {item.label.split(',')[0]}
       </Text>
     );
   };

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
 import colors from '../../../colors/colors';
 import {DATA} from '../../../models/info';
@@ -9,7 +9,17 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 export default class Shipping extends Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = {rbMethod: 'standard'};
+    this.state = {rbMethod: 'standard', isChange: false};
+  }
+  changeInfo() {
+    if (this.props.onChange) {
+      this.props.onChange('change');
+    }
+  }
+  sendData() {
+    if (this.props.onChange) {
+      this.props.onChange(this.state.rbMethod);
+    }
   }
   render() {
     return (
@@ -31,7 +41,11 @@ export default class Shipping extends Component<any, any> {
                 justifyContent: 'space-between',
               }}>
               <Text style={{color: colors.lightGray}}>Contact</Text>
-              <Text style={{color: colors.secondPrimary}}>Change</Text>
+              <Text
+                onPress={() => this.changeInfo()}
+                style={{color: colors.secondPrimary}}>
+                Change
+              </Text>
             </View>
             <Text
               style={{
@@ -41,7 +55,7 @@ export default class Shipping extends Component<any, any> {
                 borderBottomWidth: 0.5,
                 borderColor: colors.lightGray,
               }}>
-              test@gmail.com
+              {this.props.email}
             </Text>
           </View>
           <View
@@ -55,7 +69,11 @@ export default class Shipping extends Component<any, any> {
                 justifyContent: 'space-between',
               }}>
               <Text style={{color: colors.lightGray}}>Ship to</Text>
-              <Text style={{color: colors.secondPrimary}}>Change</Text>
+              <Text
+                onPress={() => this.changeInfo()}
+                style={{color: colors.secondPrimary}}>
+                Change
+              </Text>
             </View>
             <Text
               style={{
@@ -64,7 +82,7 @@ export default class Shipping extends Component<any, any> {
                 paddingTop: '2.5%',
                 paddingRight: '12.5%',
               }}>
-              Street 16, Mehmoodabad Pindora, Rawalpindi 43600, Pakistan
+              {this.props.address}
             </Text>
           </View>
         </View>
@@ -133,6 +151,22 @@ export default class Shipping extends Component<any, any> {
             </Text>
           </View>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            this.sendData();
+          }}
+          style={{
+            backgroundColor: colors.secondPrimary,
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: '5%',
+            marginBottom: 0,
+            borderRadius: 5,
+          }}>
+          <Text style={{color: colors.white, padding: '5%'}}>
+            {'Continue To Payment'}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

@@ -13,7 +13,7 @@ export default class splashScreen extends Component<any, any> {
 
   setTimeCall = () => {
     setTimeout(() => {
-      this.props.navigation.replace('SignInScreen');
+      this.props.navigation.replace('BottomNavigation');
     }, 2000);
   };
   render() {

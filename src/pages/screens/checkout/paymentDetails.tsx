@@ -19,6 +19,7 @@ export default class Payment extends Component<any, any> {
     super(props);
     this.state = {rbMethod: 'card', rbBilling: 'same'};
   }
+  addLineItems() {}
   render() {
     return (
       <View>
@@ -49,7 +50,7 @@ export default class Payment extends Component<any, any> {
                 borderBottomWidth: 0.5,
                 borderColor: colors.lightGray,
               }}>
-              test@gmail.com
+              {this.props.email}
             </Text>
           </View>
           <View
@@ -75,7 +76,7 @@ export default class Payment extends Component<any, any> {
                 borderBottomWidth: 0.5,
                 borderColor: colors.lightGray,
               }}>
-              Street 16, Mehmoodabad Pindora, Rawalpindi 43600, Pakistan
+              {this.props.address}
             </Text>
           </View>
           <View
@@ -98,7 +99,9 @@ export default class Payment extends Component<any, any> {
                 paddingTop: '2.5%',
                 paddingRight: '12.5%',
               }}>
-              Standard . Free
+              {this.props.shipMethod == 'standard'
+                ? 'Standard . Free'
+                : 'Express Delivery · $15.00'}
             </Text>
           </View>
         </View>
@@ -329,6 +332,22 @@ export default class Payment extends Component<any, any> {
             ) : null}
           </View>
         </View>
+        <TouchableOpacity
+          onPress={() => {
+            this.addLineItems();
+          }}
+          style={{
+            backgroundColor: colors.secondPrimary,
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: '5%',
+            marginBottom: 0,
+            borderRadius: 5,
+          }}>
+          <Text style={{color: colors.white, padding: '5%'}}>
+            {'Complete Order'}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

@@ -11,23 +11,58 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+
 import colors from '../../colors/colors';
-import {DATA} from '../../models/info';
 import Appbar2 from '../appbar/appbar2';
+import axios from 'axios';
+import {API} from '../../services/api';
+import {ActivityIndicator} from 'react-native-paper';
+import {api, getProducts} from '../../services/StoreFrontAPI/APIService';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+var data = null;
+
 export default class AllProducts extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       isFav: true,
-      dataSrc: DATA,
+      products: [],
+      isLoaded: false,
+      start: 0,
+      end: 10,
     };
   }
+  componentDidMount = async () => {
+    await this.getProductsList();
+  };
   getData = data => {
     this.props.navigation.navigate(data.nav);
+  };
+  getProductsList = async () => {
+    data = getProducts(250);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data) {
+          this.setState({
+            products: response.data.data.products.edges,
+            isLoaded: true,
+          });
+          console.log(this.state.products.length);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  addItems = () => {
+    this.setState({end: this.state.end + 5});
   };
   render() {
     return (
@@ -37,14 +72,27 @@ export default class AllProducts extends Component<any, any> {
           nav={'ShoppingBag'}
           changeSelectionCallback={this.getData.bind(this)}
         />
-        <View style={{flex: 0.9}}>
-          <FlatList
-            data={this.state.dataSrc}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => this.renderChildItem(item)}
-          />
+
+        <View
+          style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
+          {this.state.isLoaded ? (
+            <FlatList
+              data={this.state.products.slice(this.state.start, this.state.end)}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => this.renderChildItem(item)}
+              onEndReached={this.addItems}
+              onEndReachedThreshold={1}
+            />
+          ) : (
+            <View>
+              <ActivityIndicator color={colors.black} size={'small'} />
+              <Text style={{fontSize: 13, color: colors.black, padding: '5%'}}>
+                Loading Products
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     );
@@ -55,7 +103,9 @@ export default class AllProducts extends Component<any, any> {
       <View style={styles.card}>
         <TouchableOpacity
           onPress={() =>
-            this.props.navigation.navigate('ProductDetails', {product: item})
+            this.props.navigation.navigate('ProductDetails', {
+              product: item.node,
+            })
           }
           style={{flex: 0.8}}>
           <Image
@@ -64,7 +114,7 @@ export default class AllProducts extends Component<any, any> {
               height: windowHeight / 3.5,
               resizeMode: 'contain',
             }}
-            source={item.img}
+            source={{uri: item.node.featuredImage.url}}
           />
           <Text
             style={{
@@ -74,7 +124,7 @@ export default class AllProducts extends Component<any, any> {
               textAlign: 'center',
               letterSpacing: 2,
             }}>
-            {item.name.toUpperCase()}
+            {item.node.title.toUpperCase()}
           </Text>
 
           <Text
@@ -84,7 +134,7 @@ export default class AllProducts extends Component<any, any> {
               textAlign: 'center',
               marginTop: '2%',
             }}>
-            {item.price}
+            {'$' + item.node.variants.edges[0].node.price}
           </Text>
         </TouchableOpacity>
       </View>

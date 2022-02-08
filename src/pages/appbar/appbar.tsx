@@ -1,6 +1,6 @@
 import {View, StatusBar, Image} from 'react-native';
 import React, {Component, useEffect} from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../../colors/colors';
 import globalStyles from '../../styles/globalStyles';
 // import  Appbar  from 'react-native-paper';
@@ -21,7 +21,7 @@ export default class Appbar extends Component<any, any> {
         <View style={globalStyles.logoView}>
           <Image
             style={globalStyles.logo}
-            source={require('../../assets/images/logo.png')}
+            source={require('../../assets/images/logo.jpg')}
           />
         </View>
 
@@ -30,9 +30,9 @@ export default class Appbar extends Component<any, any> {
             onPress={() => {
               this.props.changeSelectionCallback({nav: this.props.nav});
             }}
-            name="shopping-bag"
+            name="shopping"
             color={colors.secondary}
-            size={24}
+            size={25}
           />
         </View>
       </View>

@@ -11,6 +11,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
+import {Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
 import {DATA} from '../../models/info';
@@ -27,65 +28,37 @@ export default class Wishlist extends Component<any, any> {
     };
   }
 
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar2 data={'Wishlist'} />
+        <Appbar2
+          data={'Wishlist'}
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
 
         <View
           style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
-          <FlatList
-            data={this.state.dataSrc}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => this.renderChildItem(item)}
+          <Image
+            source={require('../../assets/images/empty.png')}
+            style={{width: 100, height: 100}}
           />
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 18,
+              color: colors.black,
+              padding: '5%',
+            }}>
+            Your Wishlist is Empty
+          </Text>
         </View>
       </View>
     );
   }
-
-  renderChildItem = item => {
-    return (
-      <View style={styles.card}>
-        <TouchableOpacity
-          onPress={() =>
-            this.props.navigation.navigate('ProductDetails', {product: item})
-          }
-          style={{flex: 0.8}}>
-          <Image
-            style={{
-              width: windowWidth / 2.2,
-              height: windowHeight / 3.5,
-              resizeMode: 'contain',
-            }}
-            source={item.img}
-          />
-          <Text
-            style={{
-              fontSize: 16,
-              color: colors.secondary,
-              fontWeight: 'bold',
-              textAlign: 'center',
-              letterSpacing: 2,
-            }}>
-            {item.name.toUpperCase()}
-          </Text>
-
-          <Text
-            style={{
-              fontSize: 14,
-              color: colors.secondary,
-              textAlign: 'center',
-              marginTop: '2%',
-            }}>
-            {item.price}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
 }
 const styles = StyleSheet.create({
   mainView: {

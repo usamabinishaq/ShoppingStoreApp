@@ -12,77 +12,181 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../colors/colors';
 import {DATA} from '../../models/info';
+import {openDatabase} from 'react-native-sqlite-storage';
+import {API} from '../../services/api';
+import axios from 'axios';
+import {ActivityIndicator, Appbar} from 'react-native-paper';
+
+const db = openDatabase({name: 'cart.db', createFromLocation: 1});
 
 export default class ShoppingBag extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       qty: 1,
-      dataSrc: DATA,
-      totalPrice: 0,
+      cart: [],
+      products: [],
+      isLoaded: false,
+      subTotal: 0,
     };
   }
+  componentDidMount = () => {
+    this.loadCart();
+  };
 
+  loadCart = async () => {
+    var temp = 0;
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM cart', [], (tx, results) => {
+        var len = results.rows.length;
+        if (len > 0) {
+          for (let i = 0; i < len; i++) {
+            this.state.cart.push(results.rows.item(i));
+            temp += results.rows.item(i).price * results.rows.item(i).quantity;
+            this.setState({subTotal: temp});
+            if (i == len - 1) {
+              this.setState({isLoaded: true});
+            }
+          }
+        } else {
+          this.setState({isLoaded: true});
+        }
+      });
+    });
+  };
+  removeFromCart = product => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'Delete FROM cart where cid=?',
+        [product.cid],
+        (tx, results) => {
+          var len = results.rowsAffected;
+          if (len > 0) {
+            this.setState({
+              cart: this.state.cart.filter(i => i != product),
+              subTotal: this.state.subTotal - product.quantity * product.price,
+            });
+          }
+        },
+      );
+    });
+  };
+  addQuantity = (item, index) => {
+    let temp = [...this.state.cart];
+    // let tempTotal = this.state.subTotal;
+    item.quantity += 1;
+    temp[index] = item;
+    this.updateCart(item);
+    this.setState({
+      cart: temp,
+      subTotal: this.state.subTotal + item.price,
+    });
+  };
+  removeQuantity = (item, index) => {
+    let temp = [...this.state.cart];
+    // let tempTotal = this.state.subTotal;
+    item.quantity -= 1;
+    // item.price -= item.price;
+    // tempTotal -= item.price;
+
+    temp[index] = item;
+    this.updateCart(item);
+    this.setState({
+      cart: temp,
+      subTotal: this.state.subTotal - item.price,
+    });
+  };
+  updateCart = item => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE cart set quantity=? where variantId=?',
+        [item.quantity, item.variantId],
+        (tx, results) => {
+          if (results.rowsAffected > 0) {
+            console.log(`Results, ${results.rowsAffected}`);
+          }
+        },
+      );
+    });
+  };
+  checkout() {
+    this.props.navigation.navigate('Checkout', {
+      sub: this.state.subTotal,
+      cart: this.state.cart,
+    });
+  }
   render() {
     return (
       <View style={styles.mainView}>
-        <View style={styles.appbar}>
-          <StatusBar
-            animated={true}
-            backgroundColor={colors.primary}
-            barStyle={'dark-content'}
-          />
-          <View style={styles.bagView}>
-            <Icon
-              onPress={() => console.log('Back')}
-              name="arrow-back"
-              color={colors.secondary}
-              size={24}
-            />
-          </View>
-          <View style={styles.logoView}>
-            <Text style={styles.logoText}>Shopping Bag</Text>
-          </View>
-        </View>
-        <View style={{flex: 0.7}}>
-          <FlatList
-            data={this.state.dataSrc}
-            numColumns={1}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => this.renderMyBag(item)}
-          />
-        </View>
-        <View style={{flex: 0.3, backgroundColor: colors.white, elevation: 10}}>
-          <View style={styles.receiptView}>
-            <Text style={styles.receiptText}>Subotal</Text>
-            <Text style={styles.receiptText}>$100</Text>
-          </View>
-          <Text
-            style={{
-              fontSize: 14,
-              textAlign: 'center',
-              color: colors.secondary,
-              margin: '5%',
-            }}>
-            Shipping and discount codes calculated at checkout. Taxes are not
-            included in the product price
-          </Text>
-          <TouchableOpacity
-            style={{justifyContent: 'flex-end'}}
-            onPress={() => this.props.navigation.navigate('Checkout')}>
-            <View
-              style={[styles.signinButtonContainer, styles.ButtonContainer]}>
-              <Text style={{fontWeight: 'bold', color: colors.white}}>
-                Proceed to checkout
-              </Text>
+        <Appbar.Header
+          style={{
+            backgroundColor: colors.primary,
+            elevation: 0,
+          }}>
+          <Appbar.BackAction />
+          <Appbar.Content title={'Shopping Cart'} color={colors.black} />
+        </Appbar.Header>
+        {this.state.isLoaded ? (
+          <View style={{flex: 1}}>
+            <View style={{flex: 0.65}}>
+              <FlatList
+                data={this.state.cart}
+                numColumns={1}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => this.renderMyBag(item, index)}
+              />
             </View>
-          </TouchableOpacity>
-        </View>
+            <View
+              style={{
+                flex: 0.35,
+                backgroundColor: colors.white,
+                elevation: 10,
+              }}>
+              <View style={styles.receiptView}>
+                <Text style={[styles.receiptText, {fontSize: 15}]}>
+                  Subotal
+                </Text>
+                <Text
+                  style={[
+                    styles.receiptText,
+                    {fontSize: 17.5},
+                  ]}>{`$${this.state.subTotal}`}</Text>
+              </View>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: colors.secondary,
+                  margin: '5%',
+                }}>
+                Shipping and discount codes calculated at checkout. Taxes are
+                not included in the product price
+              </Text>
+              <TouchableOpacity
+                style={{justifyContent: 'flex-end'}}
+                onPress={() => this.checkout()}>
+                <View
+                  style={[
+                    styles.signinButtonContainer,
+                    styles.ButtonContainer,
+                  ]}>
+                  <Text style={{fontWeight: 'bold', color: colors.white}}>
+                    Proceed to checkout
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator color={colors.black} size={'small'} />
+          </View>
+        )}
       </View>
     );
   }
-  renderMyBag = item => {
+  renderMyBag = (item, index) => {
     return (
       <View
         style={{
@@ -100,7 +204,7 @@ export default class ShoppingBag extends Component<any, any> {
             alignItems: 'center',
           }}>
           <Image
-            source={item.img}
+            source={{uri: item.pimg}}
             style={{
               height: 100,
               width: 100,
@@ -110,7 +214,7 @@ export default class ShoppingBag extends Component<any, any> {
         </View>
         <View
           style={{
-            flex: 0.7,
+            flex: 0.6,
             marginLeft: 10,
             marginTop: 10,
             marginRight: 5,
@@ -125,7 +229,7 @@ export default class ShoppingBag extends Component<any, any> {
                 paddingLeft: 5,
                 paddingBottom: 10,
               }}>
-              {item.name}
+              {item.pname}
             </Text>
 
             <Text
@@ -135,7 +239,7 @@ export default class ShoppingBag extends Component<any, any> {
                 paddingLeft: 5,
                 paddingBottom: 5,
               }}>
-              Size:{' '}
+              {item.size.includes('$') ? 'Denominations: ' : 'Size: '}
               <Text
                 style={{
                   fontSize: 14.5,
@@ -149,7 +253,6 @@ export default class ShoppingBag extends Component<any, any> {
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
               }}>
               <View
                 style={{
@@ -159,17 +262,16 @@ export default class ShoppingBag extends Component<any, any> {
                   justifyContent: 'space-between',
                   padding: 3.5,
                   width: '25%',
+                  marginRight: '10%',
                 }}>
                 <Icon
                   onPress={() =>
-                    this.state.qty > 1
-                      ? this.setState({qty: this.state.qty - 1})
-                      : null
+                    item.quantity > 1 ? this.removeQuantity(item, index) : null
                   }
                   name={'remove-circle'}
                   size={20}
                   color={
-                    this.state.qty > 1 ? colors.secondary : colors.lightGray
+                    item.quantity > 1 ? colors.secondary : colors.lightGray
                   }
                 />
                 <Text
@@ -181,16 +283,27 @@ export default class ShoppingBag extends Component<any, any> {
                     paddingLeft: '15%',
                     paddingRight: '15%',
                   }}>
-                  {this.state.qty}
+                  {item.quantity}
                 </Text>
                 <Icon
-                  onPress={() => this.setState({qty: this.state.qty + 1})}
+                  onPress={() =>
+                    item.size.includes('$')
+                      ? this.addQuantity(item, index)
+                      : item.quantity < item.max_stock
+                      ? this.addQuantity(item, index)
+                      : null
+                  }
                   name={'add-circle'}
                   size={20}
-                  color={colors.secondary}
+                  color={
+                    item.size.includes('$')
+                      ? colors.secondary
+                      : item.quantity < item.max_stock
+                      ? colors.secondary
+                      : colors.lightGray
+                  }
                 />
               </View>
-
               <Text
                 style={{
                   fontSize: 16,
@@ -198,21 +311,21 @@ export default class ShoppingBag extends Component<any, any> {
                   fontWeight: 'bold',
                   paddingLeft: '5%',
                   padding: 10,
+                  marginLeft: '10%',
                 }}>
-                {'$ '}
-                {item.price}
+                {'$'}
+                {item.price * item.quantity}
               </Text>
             </View>
           </View>
         </View>
-        {/* <View style={{flex: 0.1, alignItems: 'flex-end'}}>
-          <Icon
-            name={'close'}
-            size={20}
-            color={colors.secondary}
-            style={{marginTop: 5, marginRight: 5}}
-          />
-        </View> */}
+        <Icon
+          name={'close'}
+          size={20}
+          color={colors.secondary}
+          style={{marginTop: 10, flex: 0.1}}
+          onPress={() => this.removeFromCart(item)}
+        />
       </View>
     );
   };
@@ -281,5 +394,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     margin: 10,
   },
-  receiptText: {fontSize: 15, color: colors.secondary, fontWeight: 'bold'},
+  receiptText: {color: colors.secondary, fontWeight: 'bold'},
 });

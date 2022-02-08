@@ -12,22 +12,51 @@ import colors from '../../colors/colors';
 import {SUPPORT} from '../../models/support';
 import ProfileAppbar from '../appbar/ProfileAppbar';
 import ToggleSwitch from 'toggle-switch-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 export default class ProfileScreen extends Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = {isLogin: true, support: SUPPORT, isNotify: false};
+    this.state = {
+      support: SUPPORT,
+      isLogin: false,
+      isNotify: false,
+      customer: null,
+    };
   }
 
+  componentDidMount = async () => {
+    let token = await AsyncStorage.getItem('@CustomerAccesstoken');
+    console.log(token);
+    token ? this.setState({isLogin: true}) : null;
+    let value = await AsyncStorage.getItem('@user');
+    if (value != null) {
+      this.setState({customer: JSON.parse(value)});
+    }
+  };
+  logout() {
+    AsyncStorage.removeItem('@user');
+    AsyncStorage.removeItem('@CustomerAccesstoken');
+    this.setState({customer: null, isLogin: false});
+  }
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
   render() {
     return (
       <View style={styles.mainView}>
-        <ProfileAppbar />
-        <ScrollView
-          style={{flex: 0.9, marginTop: 25}}
-          showsVerticalScrollIndicator={false}>
-          {this.state.isLogin == true ? (
+        <ProfileAppbar
+          customer={
+            this.state.customer
+              ? this.state.customer.displayName
+              : 'Piero Shopping'
+          }
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
+        <ScrollView style={{flex: 0.9}} showsVerticalScrollIndicator={false}>
+          {!this.state.isLogin ? (
             <View
               style={{
                 flex: 0.2,
@@ -198,7 +227,9 @@ export default class ProfileScreen extends Component<any, any> {
                   key={item.id}
                   style={styles.categoryListView}
                   onPress={() => {
-                    this.props.navigation.navigate('SupportView', {data: item});
+                    this.props.navigation.navigate('SupportView', {
+                      data: item.url,
+                    });
                   }}>
                   <Text style={[styles.categoryItem]}>{item.name}</Text>
                   <View>
@@ -281,8 +312,11 @@ export default class ProfileScreen extends Component<any, any> {
               9am - 8pm EST
             </Text>
           </View>
-          {this.state.isLogin == true ? (
-            <View
+          {this.state.isLogin ? (
+            <TouchableOpacity
+              onPress={() => {
+                this.logout();
+              }}
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -302,7 +336,7 @@ export default class ProfileScreen extends Component<any, any> {
                 }}>
                 Logout
               </Text>
-            </View>
+            </TouchableOpacity>
           ) : null}
         </ScrollView>
       </View>

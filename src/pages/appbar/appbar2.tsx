@@ -1,18 +1,6 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  StatusBar,
-  ImageBackground,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import React, {Component, useEffect} from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import React, {Component} from 'react';
 import colors from '../../colors/colors';
-import globalStyles from '../../styles/globalStyles';
+import {Appbar} from 'react-native-paper';
 
 export default class Appbar2 extends Component<any, any> {
   constructor(props: any) {
@@ -21,27 +9,21 @@ export default class Appbar2 extends Component<any, any> {
   }
   render() {
     return (
-      <View style={globalStyles.appbar}>
-        <StatusBar
-          animated={true}
-          backgroundColor={colors.primary}
-          barStyle={'dark-content'}
+      <Appbar.Header
+        style={{
+          backgroundColor: colors.primary,
+          elevation: 0,
+        }}>
+        <Appbar.Content title={this.props.data} color={colors.black} />
+        <Appbar.Action
+          icon="shopping"
+          size={25}
+          style={{margin: 0}}
+          onPress={() => {
+            this.props.changeSelectionCallback({nav: this.props.nav});
+          }}
         />
-        <View style={globalStyles.logoView}>
-          <Text style={globalStyles.logoText}>{this.props.data}</Text>
-        </View>
-
-        <View style={globalStyles.bagView}>
-          <Icon
-            name="shopping-bag"
-            color={colors.secondary}
-            size={24}
-            onPress={() => {
-              this.props.changeSelectionCallback({nav: this.props.nav});
-            }}
-          />
-        </View>
-      </View>
+      </Appbar.Header>
     );
   }
 }

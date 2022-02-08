@@ -23,45 +23,63 @@ import {DATA} from '../../../models/info';
 import Information from './Information';
 import Shipping from './shippingDetails';
 import Payment from './paymentDetails';
+import {openDatabase} from 'react-native-sqlite-storage';
+import axios from 'axios';
+import {ActivityIndicator, Appbar} from 'react-native-paper';
 
+const db = openDatabase({name: 'cart.db', createFromLocation: 1});
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+let information = null;
+let address = null;
+let shipMethod = null;
 export default class Checkout extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       qty: 1,
       isShow: false,
-      dataSrc: DATA,
       totalPrice: 0,
       isInfo: true,
       isShipping: false,
       isPayment: false,
+      cart: props.route.params.cart,
+      information: null,
     };
   }
+
+  infoEventhandler = data => {
+    information = data;
+    address = data.address;
+    console.log(address);
+    this.setState({
+      isShipping: true,
+      isInfo: false,
+    });
+  };
+  shippingEventhandler = data => {
+    if (data == 'change') {
+      this.setState({isShipping: false, isInfo: true});
+    } else {
+      this.setState({isShipping: false, isPayment: true});
+      shipMethod = data;
+    }
+  };
+  paymentEventhandler = data => {};
+
   render() {
     return (
       <View style={{flex: 1}}>
-        <View style={styles.appbar}>
-          <StatusBar
-            animated={true}
-            backgroundColor={colors.primary}
-            barStyle={'dark-content'}
-          />
-          <View style={styles.bagView}>
-            <Icon
-              onPress={() => console.log('Back')}
-              name="arrow-left"
-              color={colors.secondary}
-              size={20}
-            />
-          </View>
-          <View style={styles.logoView}>
-            <Text style={styles.logoText}>Checkout</Text>
-          </View>
-        </View>
-        <View style={{flex: 0.9}}>
+        <Appbar.Header
+          style={{
+            backgroundColor: colors.primary,
+            elevation: 0,
+          }}>
+          <Appbar.BackAction />
+          <Appbar.Content title={'Checkout'} color={colors.black} />
+        </Appbar.Header>
+        <View style={{flex: 1}}>
           <ScrollView
             style={{backgroundColor: colors.white}}
             showsVerticalScrollIndicator={false}>
@@ -108,29 +126,29 @@ export default class Checkout extends Component<any, any> {
                   style={{alignSelf: 'center', paddingTop: '1.5%'}}
                 />
               </TouchableOpacity>
-              <View>
-                <Text
-                  style={{
-                    color: colors.black,
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                  }}>
-                  {'$2000'}
-                </Text>
-              </View>
+              <Text
+                style={{
+                  color: colors.black,
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                }}>
+                {`$${this.props.route.params.sub}`}
+              </Text>
             </View>
             {this.state.isShow ? (
               <View>
                 <ScrollView
                   horizontal={true}
-                  showsHorizontalScrollIndicator={false}>
+                  showsHorizontalScrollIndicator={false}
+                  style={{maxHeight: 200}}>
                   <FlatList
-                    data={this.state.dataSrc}
+                    nestedScrollEnabled
+                    data={this.state.cart}
                     numColumns={1}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item, index}) => this.renderMyBag(item)}
+                    renderItem={({item, index}) => this.renderMyCart(item)}
                   />
                 </ScrollView>
 
@@ -181,16 +199,29 @@ export default class Checkout extends Component<any, any> {
                   }}>
                   <View style={styles.receiptView}>
                     <Text style={{fontSize: 15, color: colors.black}}>
-                      Subotal
+                      Subtotal
                     </Text>
-                    <Text style={styles.receiptText}>$100</Text>
+                    <Text
+                      style={
+                        styles.receiptText
+                      }>{`$${this.props.route.params.sub}`}</Text>
                   </View>
                   <View style={styles.receiptView}>
-                    <Text style={{fontSize: 15, color: colors.black}}>
+                    <Text style={{fontSize: 14, color: colors.black}}>
                       Shipping
                     </Text>
-                    <Text style={{fontSize: 15, color: colors.lightGray}}>
-                      Calculated at next step
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: this.state.isInfo
+                          ? colors.lightGray
+                          : colors.black,
+                      }}>
+                      {this.state.isInfo
+                        ? 'Calculated at next step'
+                        : shipMethod == 'express'
+                        ? '$15'
+                        : 'Free'}
                     </Text>
                   </View>
                 </View>
@@ -214,14 +245,16 @@ export default class Checkout extends Component<any, any> {
                     Total
                   </Text>
                   <Text style={{fontSize: 15, color: colors.lightGray}}>
-                    USD
+                    {'USD '}
                     <Text
                       style={{
                         fontSize: 16,
                         fontWeight: 'bold',
                         color: colors.black,
                       }}>
-                      {'  '}$2000
+                      {shipMethod == 'express'
+                        ? `$${this.props.route.params.sub + 15}`
+                        : `$${this.props.route.params.sub}`}
                     </Text>
                   </Text>
                 </View>
@@ -234,21 +267,21 @@ export default class Checkout extends Component<any, any> {
                 margin: '2.5%',
               }}>
               <Text
-                onPress={() => {
-                  this.props.navigation.navigate('ShoppingBag');
-                }}
+                // onPress={() => {
+                //   this.props.navigation.navigate('ShoppingBag');
+                // }}
                 style={{color: colors.secondPrimary}}>
                 Cart
               </Text>
               <Icon name={'chevron-right'} size={20} color={colors.lightGray} />
               <Text
-                onPress={() => {
-                  this.setState({
-                    isInfo: true,
-                    isShpping: false,
-                    isPayment: false,
-                  });
-                }}
+                // onPress={() => {
+                //   this.setState({
+                //     isInfo: true,
+                //     isShpping: false,
+                //     isPayment: false,
+                //   });
+                // }}
                 style={{
                   color: this.state.isInfo
                     ? colors.black
@@ -258,13 +291,13 @@ export default class Checkout extends Component<any, any> {
               </Text>
               <Icon name={'chevron-right'} size={20} color={colors.lightGray} />
               <Text
-                onPress={() => {
-                  this.setState({
-                    isInfo: false,
-                    isShipping: true,
-                    isPayment: false,
-                  });
-                }}
+                // onPress={() => {
+                //   this.setState({
+                //     isInfo: false,
+                //     isShipping: true,
+                //     isPayment: false,
+                //   });
+                // }}
                 style={{
                   color: this.state.isShipping
                     ? colors.black
@@ -274,13 +307,13 @@ export default class Checkout extends Component<any, any> {
               </Text>
               <Icon name={'chevron-right'} size={20} color={colors.lightGray} />
               <Text
-                onPress={() => {
-                  this.setState({
-                    isInfo: false,
-                    isShipping: false,
-                    isPayment: true,
-                  });
-                }}
+                // onPress={() => {
+                //   this.setState({
+                //     isInfo: false,
+                //     isShipping: false,
+                //     isPayment: true,
+                //   });
+                // }}
                 style={{
                   color: this.state.isPayment
                     ? colors.black
@@ -289,6 +322,7 @@ export default class Checkout extends Component<any, any> {
                 Payment
               </Text>
             </View>
+
             {/* <View
               style={{
                 borderRadius: 5,
@@ -352,31 +386,7 @@ export default class Checkout extends Component<any, any> {
               </View>
             </View> */}
             <View>{this.renderElements()}</View>
-            <TouchableOpacity
-              onPress={() => {
-                if (this.state.isInfo) {
-                  this.setState({isInfo: false, isShipping: true});
-                } else if (this.state.isShipping) {
-                  this.setState({isShipping: false, isPayment: true});
-                } else {
-                  alert('Order Completed');
-                }
-              }}
-              style={{
-                backgroundColor: colors.secondPrimary,
-                justifyContent: 'center',
-                alignItems: 'center',
-                margin: '5%',
-                borderRadius: 5,
-              }}>
-              <Text style={{color: colors.white, padding: '5%'}}>
-                {this.state.isInfo
-                  ? 'Continue To Shipping'
-                  : this.state.isShipping
-                  ? 'Continue To Payment'
-                  : 'Complete Order'}
-              </Text>
-            </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => {
                 this.state.isInfo
@@ -410,7 +420,7 @@ export default class Checkout extends Component<any, any> {
       </View>
     );
   }
-  renderMyBag = item => {
+  renderMyCart = item => {
     return (
       <View
         style={{
@@ -442,13 +452,14 @@ export default class Checkout extends Component<any, any> {
               right: 0,
             }}>
             <Text style={{fontSize: 10.5, color: colors.white}}>
-              {this.state.qty}
+              {item.quantity}
             </Text>
           </View>
           <Image
-            source={item.img}
+            source={{uri: item.pimg}}
             style={{
               height: 50,
+              width: 50,
               alignSelf: 'center',
             }}
             resizeMode={'contain'}
@@ -466,15 +477,15 @@ export default class Checkout extends Component<any, any> {
                 color: colors.secondary,
                 fontWeight: 'bold',
               }}>
-              {item.name}
+              {item.pname}
             </Text>
 
             <Text
               style={{
-                fontSize: 13,
+                fontSize: 13.5,
                 color: colors.lightGray,
               }}>
-              {'Size: ' + item.size}
+              {item.size}
             </Text>
           </View>
         </View>
@@ -490,7 +501,7 @@ export default class Checkout extends Component<any, any> {
               paddingLeft: '5%',
               padding: 10,
             }}>
-            {'$' + item.price}
+            {'$' + item.price * item.quantity}
           </Text>
         </View>
       </View>
@@ -498,11 +509,24 @@ export default class Checkout extends Component<any, any> {
   };
   renderElements() {
     if (this.state.isInfo) {
-      return <Information />;
+      return <Information onChange={this.infoEventhandler} />;
     } else if (this.state.isShipping) {
-      return <Shipping />;
+      return (
+        <Shipping
+          onChange={this.shippingEventhandler}
+          email={information.email}
+          address={address}
+        />
+      );
     } else {
-      return <Payment />;
+      return (
+        <Payment
+          onChange={this.paymentEventhandler}
+          shipMethod={shipMethod}
+          email={information.email}
+          address={address}
+        />
+      );
     }
   }
 }

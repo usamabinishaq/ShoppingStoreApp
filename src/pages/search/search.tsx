@@ -12,6 +12,7 @@ import {
   FlatList,
   TextInput,
 } from 'react-native';
+import {Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
 import Appbar2 from '../appbar/appbar2';
@@ -31,13 +32,20 @@ export default class SearchScreen extends Component<any, any> {
       ],
     };
   }
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
 
   render() {
     console.log('Search');
     return (
       <View style={styles.mainView}>
-        <Appbar2 data={'Search'} />
-        <View style={{flex: 0.9}}>
+        <Appbar2
+          data={'Search'}
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
+        <View style={{flex: 1}}>
           <View style={styles.InputContainer}>
             <Icon
               style={{margin: 10}}

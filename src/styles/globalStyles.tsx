@@ -16,7 +16,7 @@ const globalStyles = StyleSheet.create({
     flex: 0.9,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    paddingLeft: '9.5%',
   },
   logo: {
     height: 110,
@@ -29,11 +29,6 @@ const globalStyles = StyleSheet.create({
     color: colors.secondary,
     marginLeft: 15,
   },
-  //   logoView: {
-  //     flex: 0.9,
-  //     justifyContent: 'center',
-  //     padding: 10,
-  //   },
   heading: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -75,6 +70,29 @@ const globalStyles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     marginTop: 5,
+  },
+  signinButtonContainer: {
+    backgroundColor: colors.secondPrimary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  ButtonContainer: {
+    marginLeft: 20,
+    marginRight: 20,
+    margin: 10,
+    width: '90%',
+    height: 40,
+    alignSelf: 'center',
+    borderRadius: 5,
+  },
+  InputContainer: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: colors.secondary,
+    marginLeft: 20,
+    marginRight: 20,
+    margin: 15,
+    alignItems: 'center',
   },
 });
 export default globalStyles;

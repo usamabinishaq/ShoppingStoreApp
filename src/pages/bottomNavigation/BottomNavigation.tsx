@@ -1,59 +1,55 @@
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import React from 'react';
-import HomeScreen from '../home/Home';
-import SearchScreen from '../search/search';
+import Home from '../home/Home';
+import Search from '../search/search';
 import Wishlist from '../wishlist/wishlist';
-import ProfileScreen from '../profile/profile';
+import Profile from '../profile/profile';
 
 import colors from '../../colors/colors';
+import {useState} from 'react';
+import {Headline} from 'react-native-paper';
 
 const Tab = createMaterialBottomTabNavigator();
 
 export default function BottomTabs() {
+  const tabs = ['Home', 'Search', 'Profile'];
+  const [isFocused, setFocused] = useState(false);
   return (
     <Tab.Navigator
-      initialRouteName="HomeScreen"
-      activeColor={colors.secondary}
-      barStyle={{backgroundColor: colors.primary, elevation: 10}}>
-      <Tab.Screen
-        name="HomeScreen"
-        component={HomeScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: () => <Icon name="home" color={colors.black} size={24} />,
-        }}
-      />
-      <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-          tabBarLabel: 'Search',
-          tabBarIcon: () => (
-            <Icon name="search" color={colors.black} size={24} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="WishList"
-        component={Wishlist}
-        options={{
-          tabBarLabel: 'WishList',
-          tabBarIcon: () => (
-            <Icon name="star-sharp" color={colors.black} size={24} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: () => (
-            <Icon name="person" color={colors.black} size={24} />
-          ),
-        }}
-      />
+      initialRouteName="Home"
+      activeColor={colors.black}
+      inactiveColor={colors.lightGray}
+      barStyle={{
+        backgroundColor: colors.primary,
+        elevation: 5,
+      }}>
+      {tabs.map(tab => {
+        return (
+          <Tab.Screen
+            name={tab}
+            component={
+              tab == 'Home' ? Home : tab == 'Search' ? Search : Profile
+            }
+            options={{
+              title: tab,
+              tabBarIcon: ({color}) => (
+                <Icon
+                  color={color}
+                  name={
+                    tab == 'Profile'
+                      ? 'person'
+                      : tab == 'Home'
+                      ? 'home'
+                      : 'search'
+                  }
+                  size={25}
+                />
+              ),
+            }}
+          />
+        );
+      })}
     </Tab.Navigator>
   );
 }

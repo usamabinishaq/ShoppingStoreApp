@@ -1,62 +1,41 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  StatusBar,
-  ImageBackground,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import React, {useEffect} from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import {View, StatusBar, Image} from 'react-native';
+import React, {Component, useEffect} from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../../colors/colors';
+import globalStyles from '../../styles/globalStyles';
+// import  Appbar  from 'react-native-paper';
 
-export default function Appbar() {
-  return (
-    <View style={styles.appbar}>
-      <StatusBar
-        animated={true}
-        backgroundColor={colors.primary}
-        barStyle={'dark-content'}
-      />
-      <View style={styles.logoView}>
-        <Image
-          style={styles.logo}
-          source={require('../../assets/images/logo.png')}
+export default class Appbar extends Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return (
+      <View style={globalStyles.appbar}>
+        <StatusBar
+          animated={true}
+          backgroundColor={colors.primary}
+          barStyle={'dark-content'}
         />
-      </View>
+        <View style={globalStyles.logoView}>
+          <Image
+            style={globalStyles.logo}
+            source={require('../../assets/images/logo.jpg')}
+          />
+        </View>
 
-      <View style={styles.bagView}>
-        <Icon name="shopping-bag" color={colors.secondary} size={24} />
+        <View style={globalStyles.bagView}>
+          <Icon
+            onPress={() => {
+              this.props.changeSelectionCallback({nav: this.props.nav});
+            }}
+            name="shopping"
+            color={colors.secondary}
+            size={25}
+          />
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 }
-const styles = StyleSheet.create({
-  appbar: {
-    flex: 0.1,
-    flexDirection: 'row',
-  },
-  logoText: {
-    fontSize: 35,
-    fontWeight: '700',
-    textAlign: 'left',
-    color: colors.secondary,
-    letterSpacing: 5,
-  },
-  bagView: {
-    flex: 0.1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoView: {
-    flex: 0.9,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-  },
-  logo: {
-    height: 110,
-    width: 110,
-  },
-});

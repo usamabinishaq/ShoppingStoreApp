@@ -11,71 +11,119 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+
 import colors from '../../colors/colors';
 import Appbar2 from '../appbar/appbar2';
+import axios from 'axios';
+import {API} from '../../services/api';
+import {ActivityIndicator} from 'react-native-paper';
+import {
+  api,
+  getProducts,
+  getSingleCollection,
+} from '../../services/StoreFrontAPI/APIService';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+var data = null;
+
 export default class AllProducts extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       isFav: true,
-      dataSrc: [
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt.png',
-        },
-        {
-          category: 'Wallets',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/2.jpeg',
-        },
-        {
-          category: 'Hoodies',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/7.jpeg',
-        },
-        {
-          category: 'Pants',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-        {
-          category: 'SweatPants',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-        {
-          category: 'T Shirts',
-          name: 'Black Cotton T Shirt',
-          price: '$97.30 – $139.00',
-          img: '../../assets/images/shirt3.jpeg',
-        },
-      ],
+      products: [],
+      isLoaded: false,
+      start: 0,
+      end: 10,
     };
   }
-
+  componentDidMount = async () => {
+    this.props.route.params ? this.getCollection() : this.getProductsList();
+  };
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
+  getCollection = async () => {
+    data = getSingleCollection(this.props.route.params.collection.node.id);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data) {
+          this.setState({
+            products: this.props.route.params
+              ? response.data.data.collection.products.edges
+              : response.data.data.products.edges,
+            isLoaded: true,
+          });
+          console.log(this.state.products.length);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  getProductsList = async () => {
+    data = getProducts(250);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data) {
+          this.setState({
+            products: response.data.data.products.edges,
+            isLoaded: true,
+          });
+          console.log(this.state.products.length);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  addItems = () => {
+    this.setState({end: this.state.end + 5});
+  };
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar2 data={'All Products'} />
+        <Appbar2
+          data={
+            this.props.route.params
+              ? this.props.route.params.collection.node.title
+              : 'All Products'
+          }
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
+
         <View
           style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
-          <FlatList
-            data={this.state.dataSrc}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => this.renderChildItem(item)}
-          />
+          {this.state.isLoaded ? (
+            <FlatList
+              data={this.state.products.slice(this.state.start, this.state.end)}
+              numColumns={2}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => this.renderChildItem(item)}
+              onEndReached={this.addItems}
+              onEndReachedThreshold={1}
+            />
+          ) : (
+            <View>
+              <ActivityIndicator color={colors.black} size={'small'} />
+              <Text style={{fontSize: 13, color: colors.black, padding: '5%'}}>
+                Loading Products
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     );
@@ -84,62 +132,42 @@ export default class AllProducts extends Component<any, any> {
   renderChildItem = item => {
     return (
       <View style={styles.card}>
-        <View
-          style={{
-            flex: 0.2,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('ProductDetails', {
+              product: item.node,
+            })
+          }
+          style={{flex: 0.8}}>
+          <Image
             style={{
-              alignItems: 'flex-start',
-              height: 30,
-              width: 60,
-              backgroundColor: colors.secondary,
-              justifyContent: 'center',
-              borderTopLeftRadius: 10,
-            }}>
-            <Text
-              style={{
-                color: colors.white,
-                fontSize: 12,
-                fontWeight: 'bold',
-                marginLeft: 10,
-              }}>
-              Buy Now
-            </Text>
-          </View>
-          <Icon
-            name="star-sharp"
-            color={colors.secondary}
-            size={18}
-            style={{margin: 7.5, justifyContent: 'center'}}
+              width: windowWidth / 2.2,
+              height: windowHeight / 3.5,
+              resizeMode: 'contain',
+            }}
+            source={{uri: item.node.featuredImage.url}}
           />
-        </View>
-        <Image
-          style={[styles.logo]}
-          source={require('../../assets/images/shirt3.jpeg')}
-        />
-        <View
-          style={{flex: 0.25, alignItems: 'center', justifyContent: 'center'}}>
           <Text
             style={{
-              fontSize: 13,
+              fontSize: 16,
               color: colors.secondary,
               fontWeight: 'bold',
+              textAlign: 'center',
+              letterSpacing: 2,
             }}>
-            {item.name}
+            {item.node.title.toUpperCase()}
           </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.secondary,
-              }}>
-              {item.price}
-            </Text>
-          </View>
-        </View>
+
+          <Text
+            style={{
+              fontSize: 14,
+              color: colors.secondary,
+              textAlign: 'center',
+              marginTop: '2%',
+            }}>
+            {'$' + item.node.variants.edges[0].node.price}
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -160,12 +188,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    height: windowHeight / 3.5,
-    width: windowWidth / 2.5,
-    elevation: 8,
-    backgroundColor: colors.white,
-    borderRadius: 10,
-    margin: 10,
+    width: windowWidth / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
   },
   categoryTitle: {
     fontSize: 16,

@@ -3,34 +3,79 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
-  ImageBackground,
   TouchableOpacity,
   ScrollView,
   Dimensions,
-  Image,
-  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import MIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../../colors/colors';
-import Appbar from '../appbar/appbar';
+import {SUPPORT} from '../../models/support';
 import ProfileAppbar from '../appbar/ProfileAppbar';
+import ToggleSwitch from 'toggle-switch-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Appbar} from 'react-native-paper';
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 export default class ProfileScreen extends Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = {isLogin: true};
+    this.state = {
+      support: SUPPORT,
+      isLogin: false,
+      isNotify: false,
+      customer: null,
+    };
   }
 
+  componentDidMount = async () => {
+    let token = await AsyncStorage.getItem('@CustomerAccesstoken');
+    token ? this.setState({isLogin: true}) : null;
+    let value = await AsyncStorage.getItem('@user');
+    if (value != null) {
+      this.setState({customer: JSON.parse(value)});
+    }
+  };
+  logout() {
+    AsyncStorage.removeItem('@user');
+    AsyncStorage.removeItem('@CustomerAccesstoken');
+    this.setState({customer: null, isLogin: false});
+  }
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
   render() {
     return (
       <View style={styles.mainView}>
-        <ProfileAppbar />
-        <ScrollView style={{flex: 0.9, marginTop: 25}}>
-          {this.state.isLogin == true ? (
+        <Appbar.Header
+          style={{
+            backgroundColor: colors.primary,
+            elevation: 0,
+          }}>
+          <Icon
+            name={'person-circle'}
+            size={35}
+            color={colors.lightGray}
+            style={{paddingLeft: '2.5%'}}
+          />
+          <Appbar.Content
+            titleStyle={{fontSize: 18, marginLeft: '-5%', margin: 0}}
+            title={
+              this.state.customer
+                ? this.state.customer.displayName
+                : 'My profile'
+            }
+            color={colors.black}
+          />
+          <Appbar.Action
+            icon="shopping"
+            onPress={() => {
+              this.props.navigation.navigate('ShoppingBag');
+            }}
+            style={{marginRight: 0}}
+          />
+        </Appbar.Header>
+        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+          {!this.state.isLogin ? (
             <View
               style={{
                 flex: 0.2,
@@ -53,7 +98,7 @@ export default class ProfileScreen extends Component<any, any> {
                     style={{
                       margin: 10,
                       backgroundColor: colors.primary,
-                      borderColor: colors.secondary,
+                      borderColor: colors.secondPrimary,
                       borderWidth: 1,
                       width: windowWidth / 2.5,
                       height: 40,
@@ -63,7 +108,8 @@ export default class ProfileScreen extends Component<any, any> {
                       borderRadius: 2,
                       marginTop: 20,
                     }}>
-                    <Text style={{fontWeight: 'bold', color: colors.secondary}}>
+                    <Text
+                      style={{fontWeight: 'bold', color: colors.secondPrimary}}>
                       Create account
                     </Text>
                   </View>
@@ -75,7 +121,7 @@ export default class ProfileScreen extends Component<any, any> {
                   <View
                     style={{
                       margin: 10,
-                      backgroundColor: colors.secondary,
+                      backgroundColor: colors.secondPrimary,
                       width: windowWidth / 2.5,
                       height: 40,
                       justifyContent: 'center',
@@ -93,86 +139,128 @@ export default class ProfileScreen extends Component<any, any> {
             </View>
           ) : null}
           <View>
-            <Text style={styles.heading}>My Location</Text>
-            <View style={[styles.categoryListView]}>
+            <Text style={styles.heading}>Settings</Text>
+            <TouchableOpacity style={styles.categoryListView}>
+              <Text style={[styles.categoryItem]}>Language</Text>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Image
-                  style={[styles.img]}
-                  source={require('../../assets/images/flag_us.jpg')}
-                />
-                <Text style={[styles.categoryItem, {padding: 10}]}>
-                  United States
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: colors.lightGray,
+                    paddingRight: '2.5%',
+                  }}>
+                  English
                 </Text>
-              </View>
-              <View>
                 <Icon
                   name="chevron-forward"
-                  size={20}
+                  size={16}
                   color={colors.secondary}
                 />
               </View>
-            </View>
-          </View>
-          <View>
-            <Text style={styles.heading}>My Settings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.categoryListView}
+              onPress={() => this.props.navigation.navigate('SelectCurrency')}>
+              <Text style={[styles.categoryItem]}>Currency</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: colors.lightGray,
+                    paddingRight: '2.5%',
+                  }}>
+                  USD
+                </Text>
+                <Icon
+                  name="chevron-forward"
+                  size={16}
+                  color={colors.secondary}
+                />
+              </View>
+            </TouchableOpacity>
             <View style={styles.categoryListView}>
               <Text style={[styles.categoryItem]}>Notifications</Text>
-              <View>
-                <Icon
-                  name="chevron-forward"
-                  size={20}
-                  color={colors.secondary}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  paddingRight: '2.5%',
+                }}>
+                {/* <TouchableOpacity
+                  onPress={() => {
+                    this.state.isNotify
+                      ? this.setState({isNotify: false})
+                      : this.setState({isNotify: true});
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: this.state.isNotify
+                      ? 'flex-end'
+                      : 'flex-start',
+                    alignItems: 'center',
+                    backgroundColor: this.state.isNotify
+                      ? colors.secondPrimary
+                      : colors.lightGray,
+                    height: 12,
+                    width: 30,
+                    borderRadius: 12 / 2,
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: colors.secondPrimary,
+                      height: 20,
+                      width: 20,
+                      borderRadius: 20 / 2,
+                    }}></View>
+                </TouchableOpacity> */}
+                <ToggleSwitch
+                  isOn={this.state.isNotify}
+                  onColor={colors.secondPrimary}
+                  offColor={colors.lightGray}
+                  size="small"
+                  onToggle={() =>
+                    this.state.isNotify
+                      ? this.setState({isNotify: false})
+                      : this.setState({isNotify: true})
+                  }
                 />
               </View>
             </View>
           </View>
           <View>
             <Text style={styles.heading}>Support</Text>
-            <View style={styles.categoryListView}>
-              <Text style={[styles.categoryItem]}>About Piero</Text>
-              <View>
-                <Icon
-                  name="chevron-forward"
-                  size={20}
-                  color={colors.secondary}
-                />
-              </View>
-            </View>
-            <View style={styles.categoryListView}>
-              <Text style={[styles.categoryItem]}>Terms & Conditions</Text>
-              <View>
-                <Icon
-                  name="chevron-forward"
-                  size={20}
-                  color={colors.secondary}
-                />
-              </View>
-            </View>
-            <View style={styles.categoryListView}>
-              <Text style={[styles.categoryItem]}>Privacy Policy</Text>
-              <View>
-                <Icon
-                  name="chevron-forward"
-                  size={20}
-                  color={colors.secondary}
-                />
-              </View>
-            </View>
-            <View style={styles.categoryListView}>
-              <Text style={[styles.categoryItem]}>FAQ's & guides</Text>
-              <View>
-                <Icon
-                  name="chevron-forward"
-                  size={20}
-                  color={colors.secondary}
-                />
-              </View>
-            </View>
+            {this.state.support.map(item => {
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.categoryListView}
+                  onPress={() => {
+                    this.props.navigation.navigate('SupportView', {
+                      data: item.url,
+                    });
+                  }}>
+                  <Text style={[styles.categoryItem]}>{item.name}</Text>
+                  <View>
+                    <Icon
+                      name="chevron-forward"
+                      size={16}
+                      color={colors.secondary}
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
           <View>
             <View
@@ -204,7 +292,7 @@ export default class ProfileScreen extends Component<any, any> {
                 <Icon
                   name="call-outline"
                   size={25}
-                  color={colors.secondary}
+                  color={colors.secondPrimary}
                   style={{padding: 5}}
                 />
                 <Text>Phone</Text>
@@ -218,7 +306,7 @@ export default class ProfileScreen extends Component<any, any> {
                 <Icon
                   name="mail-outline"
                   size={25}
-                  color={colors.secondary}
+                  color={colors.secondPrimary}
                   style={{padding: 5}}
                 />
                 <Text>Email</Text>
@@ -243,16 +331,31 @@ export default class ProfileScreen extends Component<any, any> {
               9am - 8pm EST
             </Text>
           </View>
-          {this.state.isLogin == true ? (
-            <View
+          {this.state.isLogin ? (
+            <TouchableOpacity
+              onPress={() => {
+                this.logout();
+              }}
               style={{
-                flexDirection: 'row',
                 alignItems: 'center',
-                marginLeft: 20,
+                justifyContent: 'center',
+                borderWidth: 0.5,
+                borderColor: colors.lightGray,
+                backgroundColor: colors.secondPrimary,
+                marginTop: '2.5%',
+                marginBottom: '2.5%',
               }}>
-              <MIcon name="logout" size={25} color={colors.secondary} />
-              <Text style={styles.heading}>Logout</Text>
-            </View>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: colors.white,
+                  textAlign: 'center',
+                  padding: '2.5%',
+                }}>
+                Logout
+              </Text>
+            </TouchableOpacity>
           ) : null}
         </ScrollView>
       </View>
@@ -291,9 +394,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.secondary,
-    marginBottom: 20,
+    marginBottom: '2.5%',
     marginLeft: 20,
-    marginTop: 20,
+    marginTop: '5%',
   },
   heading2: {
     fontSize: 16,

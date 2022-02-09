@@ -7,61 +7,45 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import React, {Component, useEffect} from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../../colors/colors';
+import globalStyles from '../../styles/globalStyles';
 
-export default function ProfileAppbar() {
-  return (
-    <View style={styles.appbar}>
-      <StatusBar
-        animated={true}
-        backgroundColor={colors.primary}
-        barStyle={'dark-content'}
-      />
-      <View style={styles.profileView}>
-        <Image
-          style={styles.img}
-          source={require('../../assets/images/img.jpg')}
+export default class ProfileAppbar extends Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return (
+      <View style={globalStyles.appbar}>
+        <StatusBar
+          animated={true}
+          backgroundColor={colors.primary}
+          barStyle={'dark-content'}
         />
-      </View>
-      <View style={{justifyContent: 'center'}}>
-        <Text style={styles.username}>Mathew Charles</Text>
-      </View>
+        <View style={globalStyles.profileView}>
+          <Image
+            style={globalStyles.img}
+            source={require('../../assets/images/user.png')}
+          />
+        </View>
+        <View style={{justifyContent: 'center'}}>
+          <Text style={globalStyles.username}>{this.props.customer}</Text>
+        </View>
 
-      <View style={styles.bagView}>
-        <Icon name="shopping-bag" color={colors.secondary} size={24} />
+        <View style={globalStyles.profileBagView}>
+          <Icon
+            name="shopping"
+            color={colors.secondary}
+            size={24}
+            onPress={() => {
+              this.props.changeSelectionCallback({nav: this.props.nav});
+            }}
+          />
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 }
-const styles = StyleSheet.create({
-  appbar: {
-    flex: 0.1,
-    flexDirection: 'row',
-  },
-  username: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.secondary,
-    letterSpacing: 1,
-  },
-  bagView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-
-    marginRight: 10,
-  },
-  profileView: {
-    flex: 0.1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 25,
-  },
-  img: {
-    height: 40,
-    width: 40,
-    borderRadius: 50,
-  },
-});

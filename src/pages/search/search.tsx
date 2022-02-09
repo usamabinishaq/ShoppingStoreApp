@@ -11,10 +11,14 @@ import {
   Image,
   FlatList,
   TextInput,
+  Keyboard,
 } from 'react-native';
+import {ActivityIndicator, Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
+import {api, getCollections} from '../../services/StoreFrontAPI/APIService';
 import Appbar2 from '../appbar/appbar2';
+import axios from 'axios';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -23,24 +27,50 @@ export default class SearchScreen extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      dataSrc: [
-        {name: 'T Shirts'},
-        {name: 'Hoodies'},
-        {name: 'Pants'},
-        {name: 'Wallets'},
-      ],
+      collections: [],
+      isFocused: false,
+      isLoaded: false,
     };
   }
+  componentDidMount() {
+    this.getCollections();
+  }
+  getCollections = async () => {
+    var data = getCollections();
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data) {
+          this.setState({
+            collections: response.data.data.collections.edges,
+            isLoaded: true,
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  getData = data => {
+    this.props.navigation.navigate(data.nav);
+  };
 
   render() {
-    console.log('Search');
     return (
       <View style={styles.mainView}>
-        <Appbar2 data={'Search'} />
-        <View style={{flex: 0.9}}>
+        <Appbar2
+          data={'Search'}
+          nav={'ShoppingBag'}
+          changeSelectionCallback={this.getData.bind(this)}
+        />
+        <View style={{flex: 1}}>
           <View style={styles.InputContainer}>
             <Icon
-              style={{margin: 10}}
+              style={{margin: '2.5%'}}
               name="search"
               color={colors.lightGray}
               size={18}
@@ -50,31 +80,51 @@ export default class SearchScreen extends Component<any, any> {
               onChangeText={text => console.log(text)}
               placeholder={'Search'}
               placeholderTextColor={colors.lightGray}
+              onFocus={() => {
+                this.setState({isFocused: true});
+              }}
+              onBlur={() => {
+                this.setState({isFocused: false});
+              }}
             />
           </View>
-          <View
-            style={{
-              flex: 0.9,
-            }}>
-            <Text style={styles.categoryTitle}>Categories</Text>
-            <FlatList
-              data={this.state.dataSrc}
-              numColumns={1}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => this.renderItems(item)}
-            />
-          </View>
+          {!this.state.isFocused ? (
+            <View
+              style={{
+                flex: 0.92,
+              }}>
+              <Text style={styles.categoryTitle}>Collections</Text>
+              {this.state.isLoaded ? (
+                <FlatList
+                  data={this.state.collections.slice(1)}
+                  numColumns={1}
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item, index}) => this.renderItems(item)}
+                />
+              ) : (
+                <ActivityIndicator
+                  size={'small'}
+                  color={colors.secondPrimary}
+                />
+              )}
+            </View>
+          ) : null}
         </View>
       </View>
     );
   }
   renderItems = item => {
     return (
-      <View style={styles.categoryListView}>
-        <Text style={styles.categoryItem}>{item.name}</Text>
+      <TouchableOpacity
+        key={item.node.id}
+        style={styles.categoryListView}
+        onPress={() =>
+          this.props.navigation.navigate('AllProducts', {collection: item})
+        }>
+        <Text style={styles.categoryItem}>{item.node.title}</Text>
         <Icon name="chevron-forward" size={18} color={colors.secondary} />
-      </View>
+      </TouchableOpacity>
     );
   };
 }
@@ -112,9 +162,9 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 5,
-    margin: 20,
-    color: colors.secondary,
+    marginTop: '1%',
+    margin: '5%',
+    color: colors.black,
   },
   categoryItem: {fontSize: 14, color: colors.secondary},
 });

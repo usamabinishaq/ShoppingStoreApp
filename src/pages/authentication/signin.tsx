@@ -3,126 +3,193 @@ import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
-  ImageBackground,
   TouchableOpacity,
   TextInput,
-  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
-import Appbar from '../appbar/appbar';
+import globalStyles from '../../styles/globalStyles';
+import axios from 'axios';
+import {
+  api,
+  createAccessToken,
+  getUser,
+} from '../../services/StoreFrontAPI/APIService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ActivityIndicator, Appbar} from 'react-native-paper';
 
+var data = null;
 export default class SignInScreen extends Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = {isShow: true};
+    this.state = {
+      isShow: true,
+      email: '',
+      password: '',
+      token: '',
+      login: false,
+    };
   }
 
+  loginUser = async token => {
+    data = getUser(token);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data.customer) {
+          // console.log('Data: ' + JSON.stringify(response.data.data.customer));
+          AsyncStorage.setItem(
+            '@user',
+            JSON.stringify(response.data.data.customer),
+          );
+          this.setState({login: false});
+          this.props.navigation.goBack();
+        } else {
+          console.log(response);
+          alert('User Not FOund');
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  createAccessToken = async () => {
+    if (this.state.email != '' && this.state.password != '') {
+      this.setState({login: true});
+      data = createAccessToken(this.state.email, this.state.password);
+      await axios({
+        method: 'post',
+        url: api.url,
+        headers: api.token,
+        data: data,
+      })
+        .then(response => {
+          if (
+            response.data.data.customerAccessTokenCreate.customerAccessToken
+          ) {
+            AsyncStorage.setItem(
+              '@CustomerAccesstoken',
+              response.data.data.customerAccessTokenCreate.customerAccessToken
+                .accessToken,
+            );
+
+            let token =
+              response.data.data.customerAccessTokenCreate.customerAccessToken
+                .accessToken;
+            this.loginUser(token);
+          } else {
+            console.log(
+              JSON.stringify(
+                response.data.data.customerAccessTokenCreate.customerUserErrors,
+              ),
+            );
+            alert('User Not Found');
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      alert('Fill all Fields');
+    }
+  };
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar />
-        <View style={{flex: 0.9}}>
-          <View style={{flex: 0.5}}>
-            <View style={styles.InputContainer}>
+        <Appbar.Header
+          style={{
+            backgroundColor: colors.primary,
+            elevation: 2.5,
+          }}>
+          <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
+          <Appbar.Content title={'Sign in'} color={colors.black} />
+        </Appbar.Header>
+        <View style={{flex: 1}}>
+          <View
+            style={{
+              flex: 0.9,
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                color: colors.secondPrimary,
+                fontSize: 22,
+                marginLeft: '6.5%',
+                fontWeight: 'bold',
+                marginTop: '5%',
+              }}>
+              {'Welcome'}
+            </Text>
+            <Text
+              style={{
+                color: colors.lightGray,
+                fontSize: 12.5,
+                marginLeft: '6.5%',
+              }}>
+              {'Sign in with PIERO'}
+            </Text>
+            <View style={globalStyles.InputContainer}>
               <TextInput
                 style={styles.textInput}
-                onChangeText={text => console.log(text)}
+                onChangeText={text => this.setState({email: text})}
                 placeholder={'Email Address'}
                 placeholderTextColor={colors.lightGray}
               />
             </View>
-            <View style={styles.InputContainer}>
+            <View style={globalStyles.InputContainer}>
               <TextInput
-                style={styles.textInput}
-                onChangeText={text => console.log(text)}
+                style={{flex: 0.9}}
+                onChangeText={text => this.setState({password: text})}
                 placeholder={'Password'}
                 placeholderTextColor={colors.lightGray}
                 secureTextEntry={this.state.isShow == true ? true : false}
               />
-              <Icon
-                name={this.state.isShow == true ? 'eye-off' : 'eye'}
-                color={colors.secondary}
-                size={18}
-                onPress={() =>
-                  this.state.isShow == true
-                    ? this.setState({isShow: false})
-                    : this.setState({isShow: true})
-                }
-              />
+              <View style={{flex: 0.1, alignItems: 'center'}}>
+                <Icon
+                  name={this.state.isShow == true ? 'eye-off' : 'eye'}
+                  color={colors.black}
+                  size={18}
+                  onPress={() =>
+                    this.state.isShow == true
+                      ? this.setState({isShow: false})
+                      : this.setState({isShow: true})
+                  }
+                />
+              </View>
             </View>
-            <TouchableOpacity
-              onPress={() => console.log('Sign in Method to be Call')}>
+            <TouchableOpacity onPress={() => this.createAccessToken()}>
               <View
-                style={[styles.signinButtonContainer, styles.ButtonContainer]}>
-                <Text style={{fontWeight: 'bold', color: colors.white}}>
-                  Sign in
-                </Text>
+                style={[
+                  globalStyles.signinButtonContainer,
+                  globalStyles.ButtonContainer,
+                ]}>
+                {this.state.login ? (
+                  <ActivityIndicator size={'small'} color={colors.white} />
+                ) : (
+                  <Text style={{fontWeight: 'bold', color: colors.white}}>
+                    Sign in
+                  </Text>
+                )}
               </View>
             </TouchableOpacity>
             <Text style={styles.forgetText}>Forgot Password?</Text>
           </View>
-          <View style={{flex: 0.5}}>
+          <View style={{flex: 0.1, justifyContent: 'flex-end'}}>
             <Text
+              onPress={() => this.props.navigation.navigate('SignUpScreen')}
               style={{
                 fontWeight: 'bold',
-                color: colors.lightGray,
-                textAlign: 'center',
+                color: colors.secondary,
+                alignSelf: 'center',
+                padding: '2.5%',
               }}>
-              OR
+              {'New to PIERO? '}
+              <Text style={{color: colors.secondPrimary}}>Register</Text>
             </Text>
-            <View style={{flex: 0.8}}>
-              <TouchableOpacity
-                onPress={() => console.log('Sign in with Google')}>
-                <View
-                  style={[
-                    styles.signinButtonContainer2,
-                    styles.ButtonContainer,
-                  ]}>
-                  <View style={styles.iconContainer}>
-                    <Image
-                      style={styles.icon}
-                      source={require('../../assets/images/google.png')}
-                    />
-                  </View>
-                  <View style={styles.iconTextView}>
-                    <Text style={styles.iconText}>Continue with Google</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => console.log('Sign in with Facebook')}>
-                <View
-                  style={[
-                    styles.signinButtonContainer2,
-                    styles.ButtonContainer,
-                  ]}>
-                  <View style={styles.iconContainer}>
-                    <Image
-                      style={styles.icon}
-                      source={require('../../assets/images/facebook.png')}
-                    />
-                  </View>
-                  <View style={styles.iconTextView}>
-                    <Text style={styles.iconText}>Continue with Facebook</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{flex: 0.2}}>
-              <Text
-                onPress={() => this.props.navigation.navigate('SignUpScreen')}
-                style={{
-                  fontWeight: 'bold',
-                  color: colors.secondary,
-                  alignSelf: 'center',
-                }}>
-                New to PIERO? Register
-              </Text>
-            </View>
           </View>
         </View>
       </View>
@@ -135,7 +202,7 @@ const styles = StyleSheet.create({
   },
   forgetText: {
     fontWeight: 'bold',
-    color: colors.secondary,
+    color: colors.secondPrimary,
     textAlign: 'right',
     marginRight: 20,
   },
@@ -159,15 +226,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     flexDirection: 'row',
-  },
-  InputContainer: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderColor: colors.secondary,
-    marginLeft: 20,
-    marginRight: 20,
-    margin: 15,
-    alignItems: 'center',
   },
   mainView: {
     flex: 1,

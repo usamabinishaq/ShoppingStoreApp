@@ -13,6 +13,7 @@ import {SUPPORT} from '../../models/support';
 import ProfileAppbar from '../appbar/ProfileAppbar';
 import ToggleSwitch from 'toggle-switch-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Appbar} from 'react-native-paper';
 
 const windowWidth = Dimensions.get('window').width;
 export default class ProfileScreen extends Component<any, any> {
@@ -28,7 +29,6 @@ export default class ProfileScreen extends Component<any, any> {
 
   componentDidMount = async () => {
     let token = await AsyncStorage.getItem('@CustomerAccesstoken');
-    console.log(token);
     token ? this.setState({isLogin: true}) : null;
     let value = await AsyncStorage.getItem('@user');
     if (value != null) {
@@ -46,16 +46,35 @@ export default class ProfileScreen extends Component<any, any> {
   render() {
     return (
       <View style={styles.mainView}>
-        <ProfileAppbar
-          customer={
-            this.state.customer
-              ? this.state.customer.displayName
-              : 'Piero Shopping'
-          }
-          nav={'ShoppingBag'}
-          changeSelectionCallback={this.getData.bind(this)}
-        />
-        <ScrollView style={{flex: 0.9}} showsVerticalScrollIndicator={false}>
+        <Appbar.Header
+          style={{
+            backgroundColor: colors.primary,
+            elevation: 0,
+          }}>
+          <Icon
+            name={'person-circle'}
+            size={35}
+            color={colors.lightGray}
+            style={{paddingLeft: '2.5%'}}
+          />
+          <Appbar.Content
+            titleStyle={{fontSize: 18, marginLeft: '-5%', margin: 0}}
+            title={
+              this.state.customer
+                ? this.state.customer.displayName
+                : 'My profile'
+            }
+            color={colors.black}
+          />
+          <Appbar.Action
+            icon="shopping"
+            onPress={() => {
+              this.props.navigation.navigate('ShoppingBag');
+            }}
+            style={{marginRight: 0}}
+          />
+        </Appbar.Header>
+        <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
           {!this.state.isLogin ? (
             <View
               style={{

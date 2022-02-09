@@ -47,7 +47,6 @@ export default class SignInScreen extends Component<any, any> {
             JSON.stringify(response.data.data.customer),
           );
           this.setState({login: false});
-
           this.props.navigation.goBack();
         } else {
           console.log(response);
@@ -104,9 +103,9 @@ export default class SignInScreen extends Component<any, any> {
         <Appbar.Header
           style={{
             backgroundColor: colors.primary,
-            elevation: 0,
+            elevation: 2.5,
           }}>
-          <Appbar.BackAction onPress={() => this.props.navigation.pop()} />
+          <Appbar.BackAction onPress={() => this.props.navigation.goBack()} />
           <Appbar.Content title={'Sign in'} color={colors.black} />
         </Appbar.Header>
         <View style={{flex: 1}}>
@@ -168,7 +167,7 @@ export default class SignInScreen extends Component<any, any> {
                   globalStyles.signinButtonContainer,
                   globalStyles.ButtonContainer,
                 ]}>
-                {this.state.register ? (
+                {this.state.login ? (
                   <ActivityIndicator size={'small'} color={colors.white} />
                 ) : (
                   <Text style={{fontWeight: 'bold', color: colors.white}}>

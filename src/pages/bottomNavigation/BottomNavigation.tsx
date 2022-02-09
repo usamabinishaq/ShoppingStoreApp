@@ -8,6 +8,7 @@ import Profile from '../profile/profile';
 
 import colors from '../../colors/colors';
 import {useState} from 'react';
+import {Headline} from 'react-native-paper';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -19,7 +20,10 @@ export default function BottomTabs() {
       initialRouteName="Home"
       activeColor={colors.black}
       inactiveColor={colors.lightGray}
-      barStyle={{backgroundColor: colors.primary, elevation: 10}}>
+      barStyle={{
+        backgroundColor: colors.primary,
+        elevation: 5,
+      }}>
       {tabs.map(tab => {
         return (
           <Tab.Screen
@@ -28,10 +32,10 @@ export default function BottomTabs() {
               tab == 'Home' ? Home : tab == 'Search' ? Search : Profile
             }
             options={{
-              tabBarLabel: tab,
-              tabBarIcon: () => (
+              title: tab,
+              tabBarIcon: ({color}) => (
                 <Icon
-                  color={colors.black}
+                  color={color}
                   name={
                     tab == 'Profile'
                       ? 'person'
@@ -39,40 +43,13 @@ export default function BottomTabs() {
                       ? 'home'
                       : 'search'
                   }
-                  size={24}
+                  size={25}
                 />
               ),
             }}
           />
         );
       })}
-
-      {/* <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-          tabBarLabel: 'Search',
-          tabBarIcon: () => <Icon name="search" size={24} />,
-        }}
-      />
-      <Tab.Screen
-        name="WishList"
-        component={Wishlist}
-        options={{
-          tabBarLabel: 'WishList',
-          tabBarIcon: () => (
-            <Icon name="star-sharp"  size={24} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: () => <Icon name="person" size={24} />,
-        }}
-      /> */}
     </Tab.Navigator>
   );
 }

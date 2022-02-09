@@ -215,3 +215,57 @@ export const addCheckoutLineItems = (cid, items) => {
     },
   });
 };
+export const getCollections = () => {
+  return JSON.stringify({
+    query: `{  
+    collections(first: 250) {
+      edges {
+        node {
+            id
+          title
+        }
+      }
+    }
+  }`,
+    variables: {},
+  });
+};
+export const getSingleCollection = id => {
+  return JSON.stringify({
+    query: `query ($id: ID!){  
+    collection(id:$id) {
+      products(first: 250) {
+      edges {
+        node {
+          id
+          title
+          productType
+          descriptionHtml
+          featuredImage {
+            url
+          }
+          variants(first: 250) {
+            edges {
+              node {
+                id
+                price
+                title
+                quantityAvailable
+              }
+            }
+          }
+          images(first: 250) {
+            edges {
+              node {
+                url
+              }
+            }
+          }        
+        }
+      }
+    }
+    }
+  }`,
+    variables: {id: id},
+  });
+};

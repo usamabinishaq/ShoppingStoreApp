@@ -22,6 +22,8 @@ import Appbar from '../appbar/appbar';
 import {api, getProducts} from '../../services/StoreFrontAPI/APIService';
 import NetInfo from '@react-native-community/netinfo';
 import Modal from 'react-native-modal';
+import {ActivityIndicator} from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -36,26 +38,23 @@ export default class HomeScreen extends Component<any, any> {
       productsList: [],
       network: true,
       modal: false,
+      retry: false,
+      isLogin: false,
     };
   }
 
   componentDidMount = async () => {
     this.checkNetwork();
+    let token = await AsyncStorage.getItem('@CustomerAccesstoken');
+    token ? this.setState({isLogin: true}) : null;
   };
   checkNetwork() {
     NetInfo.fetch().then(state => {
-      console.log(
-        `STATUS: ${state.isConnected}\nDetails: ${JSON.stringify(
-          state.details,
-        )}\nIs Internet Reachable: ${state.isInternetReachable}\nTYPE: ${
-          state.type
-        }`,
-      );
       if (state.isConnected) {
-        this.setState({network: true});
+        this.setState({network: true, retry: false});
         this.getProductsList();
       } else {
-        this.setState({network: false});
+        this.setState({network: false, retry: false});
       }
     });
   }
@@ -73,8 +72,8 @@ export default class HomeScreen extends Component<any, any> {
         }
       })
       .catch(function (error) {
-        this.setState({network: false});
         console.log(error);
+        this.setState({network: false});
       });
   };
 
@@ -170,27 +169,30 @@ export default class HomeScreen extends Component<any, any> {
           nav={'ShoppingBag'}
           changeSelectionCallback={this.getData.bind(this)}
         />
-        <TouchableOpacity
-          onPress={() => {
-            this.setState({modal: true});
-          }}
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 50 / 2,
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            bottom: 15,
-            right: 15,
-            zIndex: 1,
-            backgroundColor: colors.white,
-          }}>
-          <Image
-            source={require('../../assets/images/discount_fab.png')}
-            style={{height: 50, width: 50}}
-          />
-        </TouchableOpacity>
+        {this.state.network ? (
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({modal: true});
+            }}
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: 50 / 2,
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'absolute',
+              bottom: 15,
+              right: 15,
+              zIndex: 1,
+              backgroundColor: colors.white,
+            }}>
+            <Image
+              source={require('../../assets/images/discount_fab.png')}
+              style={{height: 50, width: 50}}
+            />
+          </TouchableOpacity>
+        ) : null}
+
         {this.renderModal()}
         {this.state.network ? (
           <ScrollView style={{flex: 0.9}} showsVerticalScrollIndicator={false}>
@@ -458,63 +460,67 @@ export default class HomeScreen extends Component<any, any> {
                 </Text>
               </TouchableOpacity>
             </View>
-            <Text
-              style={{
-                fontSize: 25,
-                textAlign: 'center',
-                color: colors.black,
-                fontWeight: '800',
-                letterSpacing: 5,
-                marginTop: '5%',
-              }}>
-              SIGN UP AND SAVE
-            </Text>
-            <Text
-              style={{
-                color: colors.black,
-                fontSize: 14,
-                letterSpacing: 1,
-                textAlign: 'center',
-                paddingLeft: '8.5%',
-                paddingRight: '8.5%',
-                marginTop: '1%',
-                marginBottom: '3.5%',
-              }}>
-              {
-                'Subscribe to get special offers, giveaways, and once-in-a-lifetime deals.'
-              }
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                width: '75%',
-                height: 35,
-                alignSelf: 'center',
-              }}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Enter your email"
-                placeholderTextColor={colors.lightGray}
-              />
-              <TouchableOpacity
-                style={{
-                  marginLeft: 5,
-                  backgroundColor: colors.secondPrimary,
-                  height: 35,
-                  width: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Icon
+            {this.state.isLogin ? null : (
+              <View>
+                <Text
                   style={{
-                    color: colors.white,
-                  }}
-                  name="arrow-right"
-                  size={20}
-                />
-              </TouchableOpacity>
-            </View>
+                    fontSize: 25,
+                    textAlign: 'center',
+                    color: colors.black,
+                    fontWeight: '800',
+                    letterSpacing: 5,
+                    marginTop: '5%',
+                  }}>
+                  SIGN UP AND SAVE
+                </Text>
+                <Text
+                  style={{
+                    color: colors.black,
+                    fontSize: 14,
+                    letterSpacing: 1,
+                    textAlign: 'center',
+                    paddingLeft: '8.5%',
+                    paddingRight: '8.5%',
+                    marginTop: '1%',
+                    marginBottom: '3.5%',
+                  }}>
+                  {
+                    'Subscribe to get special offers, giveaways, and once-in-a-lifetime deals.'
+                  }
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    width: '75%',
+                    height: 35,
+                    alignSelf: 'center',
+                  }}>
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Enter your email"
+                    placeholderTextColor={colors.lightGray}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      marginLeft: 5,
+                      backgroundColor: colors.secondPrimary,
+                      height: 35,
+                      width: 50,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      style={{
+                        color: colors.white,
+                      }}
+                      name="arrow-right"
+                      size={20}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
           </ScrollView>
         ) : (
           <View
@@ -539,6 +545,10 @@ export default class HomeScreen extends Component<any, any> {
               Checking Your Internet Connection and Try Again
             </Text>
             <TouchableOpacity
+              onPress={() => {
+                this.setState({retry: true});
+                this.checkNetwork();
+              }}
               style={{
                 width: 75,
                 height: 35,
@@ -547,11 +557,11 @@ export default class HomeScreen extends Component<any, any> {
                 justifyContent: 'center',
                 marginTop: '5%',
               }}>
-              <Text
-                onPress={() => this.checkNetwork()}
-                style={{color: colors.white, fontSize: 14}}>
-                RETRY
-              </Text>
+              {this.state.retry ? (
+                <ActivityIndicator size={'small'} color={colors.white} />
+              ) : (
+                <Text style={{color: colors.white, fontSize: 14}}>RETRY</Text>
+              )}
             </TouchableOpacity>
           </View>
         )}

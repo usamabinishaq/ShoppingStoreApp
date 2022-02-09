@@ -17,7 +17,11 @@ import Appbar2 from '../appbar/appbar2';
 import axios from 'axios';
 import {API} from '../../services/api';
 import {ActivityIndicator} from 'react-native-paper';
-import {api, getProducts} from '../../services/StoreFrontAPI/APIService';
+import {
+  api,
+  getProducts,
+  getSingleCollection,
+} from '../../services/StoreFrontAPI/APIService';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -35,10 +39,33 @@ export default class AllProducts extends Component<any, any> {
     };
   }
   componentDidMount = async () => {
-    await this.getProductsList();
+    this.props.route.params ? this.getCollection() : this.getProductsList();
   };
   getData = data => {
     this.props.navigation.navigate(data.nav);
+  };
+  getCollection = async () => {
+    data = getSingleCollection(this.props.route.params.collection.node.id);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data) {
+          this.setState({
+            products: this.props.route.params
+              ? response.data.data.collection.products.edges
+              : response.data.data.products.edges,
+            isLoaded: true,
+          });
+          console.log(this.state.products.length);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
   getProductsList = async () => {
     data = getProducts(250);
@@ -68,7 +95,11 @@ export default class AllProducts extends Component<any, any> {
     return (
       <View style={styles.mainView}>
         <Appbar2
-          data={'All Products'}
+          data={
+            this.props.route.params
+              ? this.props.route.params.collection.node.title
+              : 'All Products'
+          }
           nav={'ShoppingBag'}
           changeSelectionCallback={this.getData.bind(this)}
         />

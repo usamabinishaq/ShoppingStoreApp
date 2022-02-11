@@ -24,9 +24,10 @@ export default function BottomTabs() {
         backgroundColor: colors.primary,
         elevation: 5,
       }}>
-      {tabs.map(tab => {
+      {tabs.map((tab, index) => {
         return (
           <Tab.Screen
+            key={index}
             name={tab}
             component={
               tab == 'Home' ? Home : tab == 'Search' ? Search : Profile

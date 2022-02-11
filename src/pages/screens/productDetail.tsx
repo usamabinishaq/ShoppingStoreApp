@@ -121,7 +121,6 @@ export default class ProductDetails extends Component<any, any> {
                   this.state.selectedSize.stock,
                 ],
                 (tx, results) => {
-                  console.log('Results:', results.rowsAffected);
                   alert('Successfully added to cart');
                 },
                 err => {
@@ -145,12 +144,16 @@ export default class ProductDetails extends Component<any, any> {
         <Appbar.Header
           style={{
             backgroundColor: colors.primary,
-            elevation: 0,
+            elevation: 2.5,
           }}>
-          <Appbar.BackAction />
+          <Appbar.BackAction
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          />
           <Appbar.Content title={'View Product'} color={colors.black} />
           <Appbar.Action
-            icon="cart"
+            icon="shopping"
             onPress={() => {
               this.props.navigation.navigate('ShoppingBag');
             }}

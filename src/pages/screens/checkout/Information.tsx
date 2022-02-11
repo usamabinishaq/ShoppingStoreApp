@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Image,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import countryList from 'react-select-country-list';
@@ -20,6 +21,7 @@ import {
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {openDatabase} from 'react-native-sqlite-storage';
+import globalStyles from '../../../styles/globalStyles';
 
 const db = openDatabase({name: 'cart.db', createFromLocation: 1});
 
@@ -52,10 +54,20 @@ export default class Information extends Component<any, any> {
     };
   }
   componentDidMount = async () => {
-    let val = await AsyncStorage.getItem('@CustomerAccesstoken');
-    let user = await AsyncStorage.getItem('@user');
-    user ? this.setState({loggedInUser: JSON.parse(user)}) : null;
-    val ? this.setState({isLogin: true}) : null;
+    let val = await AsyncStorage.getItem('@CustomerAccesstoken').then(val => {
+      val ? this.setState({isLogin: true}) : null;
+    });
+    let user = await AsyncStorage.getItem('@user').then(user => {
+      user ? this.setState({loggedInUser: JSON.parse(user)}) : null;
+      user
+        ? this.setState(prevState => ({
+            information: {
+              ...prevState.information,
+              email: this.state.loggedInUser.email,
+            },
+          }))
+        : null;
+    });
     this.loadCart();
   };
   makeCheckout = async () => {
@@ -140,11 +152,13 @@ export default class Information extends Component<any, any> {
     // console.log(countryList().getData());
     return (
       <View>
-        <View style={{margin: '3%'}}>
-          <Text style={styles.topHeading}>Contact Information</Text>
+        <Text style={[styles.topHeading, {marginLeft: '3%'}]}>
+          Contact Information
+        </Text>
+        <View style={{margin: '3%', justifyContent: 'center'}}>
           {!this.state.isLogin ? (
             <View>
-              {/* <Text style={{color: colors.black, letterSpacing: 0.2}}>
+              <Text style={{color: colors.black, letterSpacing: 0.2}}>
                 Already have an account?
                 <Text
                   onPress={() => {
@@ -153,7 +167,7 @@ export default class Information extends Component<any, any> {
                   style={{color: colors.secondPrimary}}>
                   {' Login'}
                 </Text>
-              </Text> */}
+              </Text>
               <TextInput
                 style={styles.txtInput2}
                 placeholder="Email or phone number"
@@ -167,33 +181,57 @@ export default class Information extends Component<any, any> {
                   }));
                 }}
               />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  right: 5,
+                }}>
+                <CheckBox
+                  disabled={false}
+                  value={this.state.cbEMailMe}
+                  onValueChange={newValue =>
+                    this.setState({cbEMailMe: newValue})
+                  }
+                  tintColors={{
+                    true: colors.secondPrimary,
+                    false: colors.secondPrimary,
+                  }}
+                />
+                <Text
+                  style={{
+                    color: colors.black,
+                    fontSize: 13,
+                    letterSpacing: 0.2,
+                  }}>
+                  Email me with news and offers
+                </Text>
+              </View>
             </View>
-          ) : null}
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              right: 5,
-            }}>
-            <CheckBox
-              disabled={false}
-              value={this.state.cbEMailMe}
-              onValueChange={newValue => this.setState({cbEMailMe: newValue})}
-              tintColors={{
-                true: colors.secondPrimary,
-                false: colors.secondPrimary,
-              }}
-            />
-            <Text
+          ) : (
+            <View
               style={{
-                color: colors.black,
-                fontSize: 13,
-                letterSpacing: 0.2,
+                flexDirection: 'row',
+                alignItems: 'center',
               }}>
-              Email me with news and offers
-            </Text>
-          </View>
+              <Image
+                style={globalStyles.img}
+                source={require('../../../assets/images/user.png')}
+              />
+              <Text
+                style={{
+                  color: colors.black,
+                  fontSize: 15,
+                  fontWeight: 'bold',
+                  letterSpacing: 1,
+                  paddingLeft: '2.5%',
+                }}>
+                {this.state.loggedInUser
+                  ? this.state.loggedInUser.displayName
+                  : 'My Account'}
+              </Text>
+            </View>
+          )}
         </View>
         <View style={{margin: '3%'}}>
           <Text style={styles.topHeading}>Shipping Address</Text>

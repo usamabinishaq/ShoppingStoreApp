@@ -100,9 +100,7 @@ export default class AllCategories extends Component<any, any> {
   }
   renderItems = item => {
     return (
-      <TouchableOpacity
-        style={styles.categoryListView}
-        onPress={() => console.log('Clicked')}>
+      <TouchableOpacity style={styles.categoryListView}>
         <Text style={styles.categoryItem}>{item.name}</Text>
         <Icon name="chevron-forward" size={16} color={colors.secondary} />
       </TouchableOpacity>

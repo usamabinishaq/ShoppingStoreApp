@@ -41,7 +41,6 @@ export default class SignInScreen extends Component<any, any> {
     })
       .then(response => {
         if (response.data.data.customer) {
-          // console.log('Data: ' + JSON.stringify(response.data.data.customer));
           AsyncStorage.setItem(
             '@user',
             JSON.stringify(response.data.data.customer),
@@ -49,7 +48,6 @@ export default class SignInScreen extends Component<any, any> {
           this.setState({login: false});
           this.props.navigation.goBack();
         } else {
-          console.log(response);
           alert('User Not FOund');
         }
       })
@@ -82,11 +80,6 @@ export default class SignInScreen extends Component<any, any> {
                 .accessToken;
             this.loginUser(token);
           } else {
-            console.log(
-              JSON.stringify(
-                response.data.data.customerAccessTokenCreate.customerUserErrors,
-              ),
-            );
             alert('User Not Found');
           }
         })

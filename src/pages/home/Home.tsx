@@ -15,8 +15,6 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../../colors/colors';
-import {LogBox} from 'react-native';
-import {API} from '../../services/api';
 import axios from 'axios';
 import Appbar from '../appbar/appbar';
 import {api, getProducts} from '../../services/StoreFrontAPI/APIService';
@@ -208,9 +206,9 @@ export default class HomeScreen extends Component<any, any> {
                   fontSize: 12,
                   fontWeight: 'bold',
                   textAlign: 'center',
-                  letterSpacing: 5,
+                  letterSpacing: 2.5,
                 }}>
-                PROMO CODE: PIERO10OFF
+                {`THE COMBINATION OF DESIGN & QUALITY`}
               </Text>
             </View>
             <ImageBackground
@@ -379,7 +377,7 @@ export default class HomeScreen extends Component<any, any> {
                   fontWeight: '800',
                   letterSpacing: 5,
                 }}>
-                YOUR FAVORITE COLLECTIONS
+                OUR FAVORITE COLLECTIONS
               </Text>
               <TouchableOpacity
                 style={{

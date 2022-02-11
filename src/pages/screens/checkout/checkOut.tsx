@@ -76,7 +76,11 @@ export default class Checkout extends Component<any, any> {
             backgroundColor: colors.primary,
             elevation: 0,
           }}>
-          <Appbar.BackAction />
+          <Appbar.BackAction
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          />
           <Appbar.Content title={'Checkout'} color={colors.black} />
         </Appbar.Header>
         <View style={{flex: 1}}>

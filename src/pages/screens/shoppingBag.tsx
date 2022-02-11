@@ -121,14 +121,18 @@ export default class ShoppingBag extends Component<any, any> {
         <Appbar.Header
           style={{
             backgroundColor: colors.primary,
-            elevation: 0,
+            elevation: 2.5,
           }}>
-          <Appbar.BackAction />
+          <Appbar.BackAction
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          />
           <Appbar.Content title={'Shopping Cart'} color={colors.black} />
         </Appbar.Header>
         {this.state.isLoaded ? (
           <View style={{flex: 1}}>
-            <View style={{flex: 0.65}}>
+            <View style={{flex: 0.7}}>
               <FlatList
                 data={this.state.cart}
                 numColumns={1}
@@ -139,7 +143,7 @@ export default class ShoppingBag extends Component<any, any> {
             </View>
             <View
               style={{
-                flex: 0.35,
+                flex: 0.3,
                 backgroundColor: colors.white,
                 elevation: 10,
               }}>
@@ -193,8 +197,8 @@ export default class ShoppingBag extends Component<any, any> {
           flexDirection: 'row',
           backgroundColor: colors.white,
           marginBottom: 0,
-          margin: '6%',
-          borderTopWidth: 1,
+          margin: '2.5%',
+          borderTopWidth: index == 0 ? 0 : 1,
           borderColor: colors.lightGray,
         }}>
         <View
@@ -206,23 +210,24 @@ export default class ShoppingBag extends Component<any, any> {
           <Image
             source={{uri: item.pimg}}
             style={{
-              height: 100,
-              width: 100,
+              height: 95,
+              width: 95,
             }}
-            resizeMode={'contain'}
+            resizeMode={'cover'}
           />
         </View>
         <View
           style={{
-            flex: 0.6,
+            flex: 0.7,
             marginLeft: 10,
             marginTop: 10,
             marginRight: 5,
           }}>
           <View style={{alignContent: 'center'}}>
             <Text
+              numberOfLines={3}
               style={{
-                fontSize: 15,
+                fontSize: 14.5,
                 color: colors.secondary,
                 fontWeight: 'bold',
                 paddingTop: 10,

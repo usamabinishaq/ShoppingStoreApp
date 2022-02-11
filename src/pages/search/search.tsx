@@ -16,7 +16,11 @@ import {
 import {ActivityIndicator, Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import colors from '../../colors/colors';
-import {api, getCollections} from '../../services/StoreFrontAPI/APIService';
+import {
+  api,
+  getCollections,
+  getProducts,
+} from '../../services/StoreFrontAPI/APIService';
 import Appbar2 from '../appbar/appbar2';
 import axios from 'axios';
 
@@ -30,10 +34,15 @@ export default class SearchScreen extends Component<any, any> {
       collections: [],
       isFocused: false,
       isLoaded: false,
+      products: [],
+      searchList: [],
+      start: 0,
+      end: 10,
     };
   }
   componentDidMount() {
     this.getCollections();
+    this.getProductsList();
   }
   getCollections = async () => {
     var data = getCollections();
@@ -58,15 +67,58 @@ export default class SearchScreen extends Component<any, any> {
   getData = data => {
     this.props.navigation.navigate(data.nav);
   };
+  getProductsList = async () => {
+    var data = getProducts(250);
+    await axios({
+      method: 'post',
+      url: api.url,
+      headers: api.token,
+      data: data,
+    })
+      .then(response => {
+        if (response.data.data) {
+          this.setState({
+            products: response.data.data.products.edges,
+          });
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  addItems = () => {
+    this.setState({end: this.state.end + 5});
+  };
+  searchProduct = text => {
+    this.setState({searchList: []});
+    let list = [];
+    this.state.products.map(item => {
+      let title = item.node.title.toLowerCase();
+      if (title.includes(text.toLowerCase())) {
+        list.push(item);
+      }
+    });
+    this.setState({searchList: list});
+  };
 
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar2
-          data={'Search'}
-          nav={'ShoppingBag'}
-          changeSelectionCallback={this.getData.bind(this)}
-        />
+        <Appbar.Header
+          style={{
+            backgroundColor: colors.primary,
+            elevation: 2.5,
+          }}>
+          <Appbar.Content title={'Search'} color={colors.black} />
+          <Appbar.Action
+            icon="shopping"
+            size={25}
+            style={{margin: 0}}
+            onPress={() => {
+              this.props.navigation.navigate('ShoppingBag');
+            }}
+          />
+        </Appbar.Header>
         <View style={{flex: 1}}>
           <View style={styles.InputContainer}>
             <Icon
@@ -77,15 +129,15 @@ export default class SearchScreen extends Component<any, any> {
             />
             <TextInput
               style={styles.textInput}
-              onChangeText={text => console.log(text)}
+              onChangeText={text => this.searchProduct(text)}
               placeholder={'Search'}
               placeholderTextColor={colors.lightGray}
               onFocus={() => {
                 this.setState({isFocused: true});
               }}
-              onBlur={() => {
-                this.setState({isFocused: false});
-              }}
+              // onBlur={() => {
+              //   this.setState({isFocused: false});
+              // }}
             />
           </View>
           {!this.state.isFocused ? (
@@ -109,11 +161,73 @@ export default class SearchScreen extends Component<any, any> {
                 />
               )}
             </View>
+          ) : this.state.searchList ? (
+            <View
+              style={{
+                flex: 0.92,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <FlatList
+                data={this.state.searchList.slice(
+                  this.state.start,
+                  this.state.end,
+                )}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => this.renderChildItem(item)}
+                onEndReached={this.addItems}
+                onEndReachedThreshold={1}
+              />
+            </View>
           ) : null}
         </View>
       </View>
     );
   }
+  renderChildItem = item => {
+    return (
+      <View style={styles.card}>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('ProductDetails', {
+              product: item.node,
+            })
+          }
+          style={{flex: 0.8}}>
+          <Image
+            style={{
+              width: windowWidth / 2.2,
+              height: windowHeight / 3.5,
+              resizeMode: 'contain',
+            }}
+            source={{uri: item.node.featuredImage.url}}
+          />
+          <Text
+            style={{
+              fontSize: 16,
+              color: colors.secondary,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              letterSpacing: 2,
+            }}>
+            {item.node.title.toUpperCase()}
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 14,
+              color: colors.secondary,
+              textAlign: 'center',
+              marginTop: '2%',
+            }}>
+            {'$' + item.node.variants.edges[0].node.price}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
   renderItems = item => {
     return (
       <TouchableOpacity
@@ -167,4 +281,10 @@ const styles = StyleSheet.create({
     color: colors.black,
   },
   categoryItem: {fontSize: 14, color: colors.secondary},
+  card: {
+    width: windowWidth / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 5,
+  },
 });

@@ -16,7 +16,7 @@ import colors from '../../colors/colors';
 import Appbar2 from '../appbar/appbar2';
 import axios from 'axios';
 import {API} from '../../services/api';
-import {ActivityIndicator} from 'react-native-paper';
+import {ActivityIndicator, Appbar} from 'react-native-paper';
 import {
   api,
   getProducts,
@@ -33,9 +33,9 @@ export default class AllProducts extends Component<any, any> {
     this.state = {
       isFav: true,
       products: [],
-      isLoaded: false,
       start: 0,
       end: 10,
+      isLoaded: false,
     };
   }
   componentDidMount = async () => {
@@ -60,7 +60,6 @@ export default class AllProducts extends Component<any, any> {
               : response.data.data.products.edges,
             isLoaded: true,
           });
-          console.log(this.state.products.length);
         }
       })
       .catch(function (error) {
@@ -81,7 +80,6 @@ export default class AllProducts extends Component<any, any> {
             products: response.data.data.products.edges,
             isLoaded: true,
           });
-          console.log(this.state.products.length);
         }
       })
       .catch(function (error) {
@@ -94,18 +92,35 @@ export default class AllProducts extends Component<any, any> {
   render() {
     return (
       <View style={styles.mainView}>
-        <Appbar2
-          data={
-            this.props.route.params
-              ? this.props.route.params.collection.node.title
-              : 'All Products'
-          }
-          nav={'ShoppingBag'}
-          changeSelectionCallback={this.getData.bind(this)}
-        />
+        <Appbar.Header
+          style={{
+            backgroundColor: colors.primary,
+            elevation: 2.5,
+          }}>
+          <Appbar.BackAction
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          />
+          <Appbar.Content
+            title={
+              this.props.route.params
+                ? this.props.route.params.collection.node.title
+                : 'All Products'
+            }
+            color={colors.black}
+          />
+          <Appbar.Action
+            icon="shopping"
+            size={25}
+            style={{margin: 0}}
+            onPress={() => {
+              this.props.navigation.navigate('ShoppingBag');
+            }}
+          />
+        </Appbar.Header>
 
-        <View
-          style={{flex: 0.9, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           {this.state.isLoaded ? (
             <FlatList
               data={this.state.products.slice(this.state.start, this.state.end)}

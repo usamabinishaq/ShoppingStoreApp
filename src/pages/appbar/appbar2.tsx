@@ -12,15 +12,20 @@ export default class Appbar2 extends Component<any, any> {
       <Appbar.Header
         style={{
           backgroundColor: colors.primary,
-          elevation: 0,
+          elevation: 2.5,
         }}>
-        <Appbar.Content title={this.props.data} color={colors.black} />
+        <Appbar.BackAction
+          onPress={() => {
+            this.props.navigation.bac;
+          }}
+        />
+        <Appbar.Content title={'Search'} color={colors.black} />
         <Appbar.Action
           icon="shopping"
           size={25}
           style={{margin: 0}}
           onPress={() => {
-            this.props.changeSelectionCallback({nav: this.props.nav});
+            this.props.navigation.navigate('ShoppingBag');
           }}
         />
       </Appbar.Header>

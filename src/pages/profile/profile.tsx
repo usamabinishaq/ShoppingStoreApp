@@ -28,12 +28,14 @@ export default class ProfileScreen extends Component<any, any> {
   }
 
   componentDidMount = async () => {
-    let token = await AsyncStorage.getItem('@CustomerAccesstoken');
-    token ? this.setState({isLogin: true}) : null;
-    let value = await AsyncStorage.getItem('@user');
-    if (value != null) {
-      this.setState({customer: JSON.parse(value)});
-    }
+    let token = await AsyncStorage.getItem('@CustomerAccesstoken').then(
+      data => {
+        data ? this.setState({isLogin: true}) : null;
+      },
+    );
+    let value = await AsyncStorage.getItem('@user').then(data => {
+      this.setState({customer: JSON.parse(data)});
+    });
   };
   logout() {
     AsyncStorage.removeItem('@user');
